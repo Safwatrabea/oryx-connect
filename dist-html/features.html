@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المزايا | Weoryx Connect</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-[#0D0D12] text-white font-['Cairo'] overflow-x-hidden min-h-screen flex flex-col">
+
+    <!-- Navbar -->
+    <header id="main-header" style="position: fixed; inset: 0 0 auto 0; z-index: 50; transition: all 0.3s ease; background: transparent; border-bottom: 1px solid transparent;">
+        <div style="max-width: 1152px; margin: 0 auto; padding: 0 32px; height: 72px; display: flex; align-items: center; justify-content: space-between;">
+            <a href="index.html" style="display: flex; align-items: center; gap: 12px; text-decoration: none;">
+                <div style="position: relative; width: 38px; height: 38px; flex-shrink: 0;">
+                    <div style="position: absolute; inset: 0; border-radius: 12px; background: linear-gradient(135deg, #8B5CF6, #F59E0B); opacity: 0.9;"></div>
+                    <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 900; font-size: 17px;">W</div>
+                </div>
+                <span style="font-weight: 700; font-size: 18px; color: #fff; letter-spacing: 0.01em;">Weoryx <span style="color: rgba(255,255,255,0.40); font-weight: 400; font-size: 14px;">Connect</span></span>
+            </a>
+
+            <nav class="hidden md:flex items-center gap-8">
+                <a href="features.html" class="text-[15px] text-white transition-colors no-underline leading-none">المزايا</a>
+                <a href="pricing.html" class="text-[15px] text-white/60 hover:text-white transition-colors no-underline leading-none">الأسعار</a>
+                <a href="index.html#faq" class="text-[15px] text-white/60 hover:text-white transition-colors no-underline leading-none">الأسئلة الشائعة</a>
+            </nav>
+
+            <div class="hidden md:flex items-center gap-2">
+                <a href="login.html" class="text-[14px] text-white/60 hover:text-white hover:bg-white/5 no-underline px-4 py-2.5 rounded-[10px] transition-all leading-none">دخول</a>
+                <a href="register.html?plan=team" class="btn-primary" style="padding: 10px 22px; font-size: 14px; gap: 7px;">
+                    <i data-lucide="zap" style="width: 14px; height: 14px; position: relative; z-index: 1; flex-shrink: 0;"></i>
+                    <span style="position: relative; z-index: 1;">ابدأ مجانًا</span>
+                </a>
+            </div>
+
+            <button id="mobile-menu-btn" class="md:hidden bg-transparent border-none text-white cursor-pointer p-2 rounded-lg flex">
+                <i data-lucide="menu" id="menu-icon" style="width: 22px; height: 22px;"></i>
+                <i data-lucide="x" id="close-icon" style="width: 22px; height: 22px; display: none;"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Mobile drawer -->
+    <div id="mobile-drawer" class="md:hidden fixed inset-0 z-40 opacity-0 pointer-events-none transition-opacity duration-250 ease-in-out">
+        <div id="mobile-drawer-close-area" class="absolute inset-0 bg-black/65 backdrop-blur-sm"></div>
+        <div class="drawer-content absolute top-[72px] left-0 right-0 bg-[#13131A] border-b border-white/5 p-6 flex flex-col gap-2 -translate-y-2 transition-transform duration-250 ease-in-out">
+            <a href="features.html" class="block text-white/70 text-[16px] py-3.5 border-b border-white/5 no-underline">المزايا</a>
+            <a href="pricing.html" class="block text-white/70 text-[16px] py-3.5 border-b border-white/5 no-underline">الأسعار</a>
+            <a href="index.html#faq" class="block text-white/70 text-[16px] py-3.5 border-b border-white/5 no-underline">الأسئلة الشائعة</a>
+            <a href="login.html" class="block text-white/60 text-[16px] py-3.5 no-underline">دخول</a>
+            <a href="register.html?plan=team" class="btn-primary block text-center mt-2 p-3.5 text-[15px] no-underline">
+                <span class="relative z-10">ابدأ مجانًا — أسبوعان مجانًا</span>
+            </a>
+        </div>
+    </div>
+
+    <main class="flex-1" style="padding-top: 96px;">
+        <section style="padding: 72px 0 56px;">
+            <div class="container" style="max-width: 1100px; padding: 0 32px;">
+                <div class="reveal" style="text-align: center; max-width: 680px; margin: 0 auto;">
+                    <span style="font-size: 11px; font-weight: 700; letter-spacing: 0.15em; color: #a78bfa; text-transform: uppercase;">تفاصيل المنصة</span>
+                    <h1 style="font-size: clamp(2rem, 4.5vw, 3rem); font-weight: 900; margin-top: 14px; margin-bottom: 20px; line-height: 1.2; color: #fff;">
+                        كل أداة — مشروحة بالتفصيل
+                    </h1>
+                    <p style="color: rgba(255,255,255,0.50); font-size: 1.1rem; line-height: 1.75;">
+                        لا وعود فضفاضة. هنا شرح دقيق لكل ميزة وكيف تساعد عملك تحديدًا.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Feature 1 -->
+        <section style="padding: 80px 0; background: #0D0D12;">
+            <div class="container" style="max-width: 1100px; padding: 0 32px;">
+                <div class="reveal delay-100">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center;" class="feature-grid md:grid-cols-2 grid-cols-1">
+                        <div>
+                            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+                                <div style="width: 52px; height: 52px; border-radius: 16px; background: rgba(167,139,250,0.10); border: 1px solid rgba(167,139,250,0.15); display: flex; align-items: center; justify-content: center; color: #a78bfa; flex-shrink: 0;">
+                                    <i data-lucide="inbox" style="width: 28px; height: 28px;"></i>
+                                </div>
+                            </div>
+                            <p style="font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #a78bfa; margin-bottom: 10px;">كل القنوات — شاشة واحدة</p>
+                            <h2 style="font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 900; color: #fff; margin-bottom: 16px; line-height: 1.25;">صندوق وارد موحد</h2>
+                            <p style="color: rgba(255,255,255,0.55); line-height: 1.85; margin-bottom: 28px; font-size: 15px;">اجمع رسائل واتساب وفيسبوك وتيليغرام وإنستغرام في لوحة تحكم واحدة. فريقك يرى كل المحادثات بدون الحاجة لفتح تطبيق آخر.</p>
+
+                            <ul style="list-style: none; display: flex; flex-direction: column; gap: 12px; margin-bottom: 28px;">
+                                <li style="display: flex; align-items: flex-start; gap: 10px; font-size: 14px;">
+                                    <div style="width: 20px; height: 20px; border-radius: 50%; background: rgba(167,139,250,0.10); color: #a78bfa; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px;">
+                                        <i data-lucide="check-circle-2" style="width: 11px; height: 11px;"></i>
+                                    </div>
+                                    <span style="color: rgba(255,255,255,0.70);">عرض موحد لكل القنوات في نفس الوقت</span>
+                                </li>
+                                <!-- etc... -->
+                            </ul>
+
+                            <div style="padding: 16px 20px; border-radius: 14px; background: rgba(167,139,250,0.10); border: 1px solid rgba(167,139,250,0.15); font-size: 14px; line-height: 1.7;">
+                                <span style="color: #a78bfa; font-weight: 700;">مثال واقعي: </span>
+                                <span style="color: rgba(255,255,255,0.60);">🍔 مطعم يستقبل طلبات من واتساب، حجوزات من فيسبوك، استفسارات من إنستغرام — كلها في شاشة واحدة لموظف واحد.</span>
+                            </div>
+                        </div>
+
+                        <div style="order: 1;">
+                            <div style="aspect-ratio: 4/3; border-radius: 20px; background: rgba(167,139,250,0.10); border: 1px solid rgba(167,139,250,0.15); display: flex; align-items: center; justify-content: center;">
+                                <div style="text-align: center;">
+                                    <div style="width: 64px; height: 64px; margin: 0 auto 12px; border-radius: 18px; background: rgba(167,139,250,0.10); border: 1px solid rgba(167,139,250,0.15); display: flex; align-items: center; justify-content: center; color: #a78bfa;">
+                                        <i data-lucide="inbox" style="width: 28px; height: 28px;"></i>
+                                    </div>
+                                    <p style="color: rgba(255,255,255,0.30); font-size: 13px;">صندوق وارد موحد</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section style="padding: 96px 0;">
+            <div class="container">
+                <div class="reveal" style="text-align: center;">
+                    <h2 style="font-size: clamp(1.75rem, 3.5vw, 2.5rem); font-weight: 900; margin-bottom: 16px; color: #fff;">جاهز تجرب؟</h2>
+                    <p style="color: rgba(255,255,255,0.45); font-size: 1.1rem; margin-bottom: 36px;">أسبوعان مجانًا — بدون بطاقة ائتمانية</p>
+                    <a href="register.html?plan=team" class="btn-primary" style="padding: 14px 40px; font-size: 15px; display: inline-flex; align-items: center; gap: 10px; position: relative; text-decoration: none;">
+                        <i data-lucide="zap" style="width: 17px; height: 17px; position: relative; z-index: 1;"></i>
+                        <span style="position: relative; z-index: 1;">ابدأ مجانًا الآن</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer style="background: #0D0D12; border-top: 1px solid rgba(255,255,255,0.05); margin-top: auto;">
+        <div style="height: 1px; background: linear-gradient(90deg, transparent, rgba(139,92,246,0.35), transparent);"></div>
+        <div class="container" style="padding: 64px 20px 48px;">
+            <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px; margin-bottom: 48px;" class="md:grid-cols-4 grid-cols-2">
+                <div class="col-span-2 md:col-span-1">
+                    <a href="index.html" style="display: inline-flex; align-items: center; gap: 12px; text-decoration: none; margin-bottom: 16px;">
+                        <div style="position: relative; width: 36px; height: 36px; flex-shrink: 0;">
+                            <div style="position: absolute; inset: 0; border-radius: 10px; background: linear-gradient(135deg, #8B5CF6, #F59E0B);"></div>
+                            <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 900; font-size: 16px;">W</div>
+                        </div>
+                        <span style="font-weight: 700; color: #fff; font-size: 16px;">Weoryx Connect</span>
+                    </a>
+                    <p style="color: rgba(255,255,255,0.38); font-size: 14px; line-height: 1.75; max-width: 260px; margin-bottom: 24px;">
+                        منصة موحدة لإدارة رسائل عملاء الشركات السعودية الصغيرة والمتوسطة عبر جميع القنوات.
+                    </p>
+                </div>
+                <div>
+                    <h5 style="color: #fff; font-size: 14px; font-weight: 700; margin-bottom: 20px;">المنصة</h5>
+                    <ul style="list-style: none; display: flex; flex-direction: column; gap: 14px;">
+                        <li><a href="features.html" class="text-white/40 hover:text-white/80 no-underline text-sm transition-colors">المزايا</a></li>
+                        <li><a href="pricing.html" class="text-white/40 hover:text-white/80 no-underline text-sm transition-colors">الأسعار</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div style="height: 1px; background: linear-gradient(90deg, transparent, rgba(139,92,246,0.20), transparent); margin-bottom: 28px;"></div>
+            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+                <p style="color: rgba(255,255,255,0.22); font-size: 13px;">© 2026 Weoryx. جميع الحقوق محفوظة.</p>
+                <p style="color: rgba(255,255,255,0.22); font-size: 13px;" dir="ltr">connect.weoryx.com</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <style>
+        @media (max-width: 768px) {
+            .feature-grid { grid-template-columns: 1fr !important; }
+            .feature-grid > div { order: unset !important; }
+        }
+    </style>
+</body>
+</html>

@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إنشاء حساب مجاني | Weoryx Connect</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 1023px) {
+            .register-sidebar {
+                display: none !important;
+            }
+
+            .register-grid {
+                grid-template-columns: 1fr !important;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .form-grid {
+                grid-template-columns: 1fr !important;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-[#0D0D12] text-white font-['Cairo'] overflow-x-hidden min-h-screen flex flex-col">
+
+    <!-- Navbar -->
+    <header id="main-header"
+        style="position: fixed; inset: 0 0 auto 0; z-index: 50; transition: all 0.3s ease; background: transparent; border-bottom: 1px solid transparent;">
+        <div
+            style="max-width: 1152px; margin: 0 auto; padding: 0 32px; height: 72px; display: flex; align-items: center; justify-content: space-between;">
+            <a href="index.html" style="display: flex; align-items: center; gap: 12px; text-decoration: none;">
+                <div style="position: relative; width: 38px; height: 38px; flex-shrink: 0;">
+                    <div
+                        style="position: absolute; inset: 0; border-radius: 12px; background: linear-gradient(135deg, #8B5CF6, #F59E0B); opacity: 0.9;">
+                    </div>
+                    <div
+                        style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 900; font-size: 17px;">
+                        W</div>
+                </div>
+                <span style="font-weight: 700; font-size: 18px; color: #fff; letter-spacing: 0.01em;">Weoryx <span
+                        style="color: rgba(255,255,255,0.40); font-weight: 400; font-size: 14px;">Connect</span></span>
+            </a>
+
+            <nav class="hidden md:flex items-center gap-8">
+                <a href="features.html"
+                    class="text-[15px] text-white/60 hover:text-white transition-colors no-underline leading-none">المزايا</a>
+                <a href="pricing.html"
+                    class="text-[15px] text-white/60 hover:text-white transition-colors no-underline leading-none">الأسعار</a>
+                <a href="index.html#faq"
+                    class="text-[15px] text-white/60 hover:text-white transition-colors no-underline leading-none">الأسئلة
+                    الشائعة</a>
+            </nav>
+
+            <div class="hidden md:flex items-center gap-2">
+                <a href="login.html"
+                    class="text-[14px] text-white/60 hover:text-white hover:bg-white/5 no-underline px-4 py-2.5 rounded-[10px] transition-all leading-none">دخول</a>
+            </div>
+
+            <button id="mobile-menu-btn"
+                class="md:hidden bg-transparent border-none text-white cursor-pointer p-2 rounded-lg flex">
+                <i data-lucide="menu" id="menu-icon" style="width: 22px; height: 22px;"></i>
+                <i data-lucide="x" id="close-icon" style="width: 22px; height: 22px; display: none;"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Mobile drawer -->
+    <div id="mobile-drawer"
+        class="md:hidden fixed inset-0 z-40 opacity-0 pointer-events-none transition-opacity duration-250 ease-in-out">
+        <div id="mobile-drawer-close-area" class="absolute inset-0 bg-black/65 backdrop-blur-sm"></div>
+        <div
+            class="drawer-content absolute top-[72px] left-0 right-0 bg-[#13131A] border-b border-white/5 p-6 flex flex-col gap-2 -translate-y-2 transition-transform duration-250 ease-in-out">
+            <a href="features.html"
+                class="block text-white/70 text-[16px] py-3.5 border-b border-white/5 no-underline">المزايا</a>
+            <a href="pricing.html"
+                class="block text-white/70 text-[16px] py-3.5 border-b border-white/5 no-underline">الأسعار</a>
+            <a href="index.html#faq"
+                class="block text-white/70 text-[16px] py-3.5 border-b border-white/5 no-underline">الأسئلة الشائعة</a>
+            <a href="login.html" class="block text-white/60 text-[16px] py-3.5 no-underline">دخول</a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="flex-1" style="padding-top: 96px; padding-bottom: 64px;">
+        <div class="container" style="max-width: 920px; padding: 0 32px;">
+
+            <!-- Success Message (Hidden by default) -->
+            <div id="success-message"
+                style="display: none; min-height: calc(100vh - 160px); align-items: center; justify-content: center; padding: 20px;">
+                <div class="glass noise"
+                    style="padding: 64px 48px; text-align: center; max-width: 440px; width: 100%; border-radius: 24px;">
+                    <div
+                        style="width: 80px; height: 80px; margin: 0 auto 24px; border-radius: 50%; background: rgba(139,92,246,0.15); border: 1px solid rgba(139,92,246,0.20); display: flex; align-items: center; justify-content: center;">
+                        <i data-lucide="check-circle-2" style="width: 36px; height: 36px; color: #a78bfa;"></i>
+                    </div>
+                    <h1 style="font-size: 1.75rem; font-weight: 900; color: #fff; margin-bottom: 12px;">تم إنشاء حسابك!
+                        🎉</h1>
+                    <p style="color: rgba(255,255,255,0.50); line-height: 1.75; margin-bottom: 32px; font-size: 15px;">
+                        مرحبًا بك في Weoryx — تجربتك المجانية لأسبوعين بدأت الآن
+                    </p>
+                    <a href="https://app.weoryx.com" class="btn-primary"
+                        style="display: flex; align-items: center; justify-content: center; gap: 10px; padding: 14px; font-size: 15px; border-radius: 12px; text-decoration: none; position: relative;">
+                        <i data-lucide="zap" style="width: 17px; height: 17px; position: relative; z-index: 1;"></i>
+                        <span style="position: relative; z-index: 1;">انتقل إلى لوحة التحكم</span>
+                    </a>
+                    <p style="color: rgba(255,255,255,0.20); font-size: 12px; margin-top: 16px;" dir="ltr">
+                        app.weoryx.com</p>
+                </div>
+            </div>
+
+            <!-- Registration Form -->
+            <div id="registration-form" class="register-grid"
+                style="display: grid; grid-template-columns: 3fr 2fr; gap: 40px; align-items: start; animation: fadeUp 0.6s ease both;">
+
+                <!-- Form Area -->
+                <div class="glass noise" style="padding: 40px 36px; border-radius: 24px;">
+                    <div style="margin-bottom: 32px;">
+                        <h1
+                            style="font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 900; color: #fff; margin-bottom: 8px;">
+                            ابدأ تجربتك المجانية الآن</h1>
+                        <p style="color: rgba(255,255,255,0.45); font-size: 14px;">أسبوعان مجانًا — لا بطاقة ائتمانية —
+                            إلغاء في أي وقت</p>
+                    </div>
+
+                    <form id="reg-form" style="display: flex; flex-direction: column; gap: 20px;">
+
+                        <!-- Plan toggle -->
+                        <div>
+                            <label
+                                style="display: block; font-size: 13px; color: rgba(255,255,255,0.60); margin-bottom: 10px; font-weight: 500;">اختر
+                                خطتك</label>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                                <button type="button" id="plan-team-btn" class="plan-btn"
+                                    style="padding: 14px 16px; border-radius: 12px; text-align: center; border: 1.5px solid rgba(139,92,246,0.50); background: rgba(139,92,246,0.10); color: #c4b5fd; cursor: pointer; transition: all 0.2s;">
+                                    <div style="font-weight: 700; font-size: 14px; margin-bottom: 4px;">خطة الفريق</div>
+                                    <div style="font-size: 12px; opacity: 0.60;">750 ريال/شهر</div>
+                                </button>
+                                <button type="button" id="plan-business-btn" class="plan-btn"
+                                    style="padding: 14px 16px; border-radius: 12px; text-align: center; border: 1px solid rgba(255,255,255,0.08); background: transparent; color: rgba(255,255,255,0.40); cursor: pointer; transition: all 0.2s;">
+                                    <div style="font-weight: 700; font-size: 14px; margin-bottom: 4px;">خطة الأعمال
+                                    </div>
+                                    <div style="font-size: 12px; opacity: 0.60;">1,250 ريال/شهر</div>
+                                </button>
+                            </div>
+                            <input type="hidden" id="selected-plan" name="plan" value="team">
+                        </div>
+
+                        <!-- Name fields -->
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;" class="form-grid">
+                            <div>
+                                <label
+                                    style="display: block; font-size: 13px; color: rgba(255,255,255,0.60); margin-bottom: 8px; font-weight: 500;">اسم
+                                    الشركة</label>
+                                <input type="text" name="company" placeholder="مثال: مطعم السدير" required
+                                    style="width: 100%; padding: 13px 16px; border-radius: 12px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: #fff; font-size: 15px; outline: none; transition: border-color 0.2s; box-sizing: border-box; font-family: inherit;"
+                                    onfocus="this.style.borderColor = '#8B5CF6'"
+                                    onblur="this.style.borderColor = 'rgba(255,255,255,0.08)'">
+                            </div>
+                            <div>
+                                <label
+                                    style="display: block; font-size: 13px; color: rgba(255,255,255,0.60); margin-bottom: 8px; font-weight: 500;">اسمك
+                                    الكامل</label>
+                                <input type="text" name="name" placeholder="محمد العتيبي" required
+                                    style="width: 100%; padding: 13px 16px; border-radius: 12px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: #fff; font-size: 15px; outline: none; transition: border-color 0.2s; box-sizing: border-box; font-family: inherit;"
+                                    onfocus="this.style.borderColor = '#8B5CF6'"
+                                    onblur="this.style.borderColor = 'rgba(255,255,255,0.08)'">
+                            </div>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;" class="form-grid">
+                            <div>
+                                <label
+                                    style="display: block; font-size: 13px; color: rgba(255,255,255,0.60); margin-bottom: 8px; font-weight: 500;">رقم
+                                    الجوال</label>
+                                <input type="tel" name="phone" dir="ltr" placeholder="05XXXXXXXX" required
+                                    style="width: 100%; padding: 13px 16px; border-radius: 12px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: #fff; font-size: 15px; outline: none; transition: border-color 0.2s; box-sizing: border-box; font-family: inherit;"
+                                    onfocus="this.style.borderColor = '#8B5CF6'"
+                                    onblur="this.style.borderColor = 'rgba(255,255,255,0.08)'">
+                            </div>
+                            <div>
+                                <label
+                                    style="display: block; font-size: 13px; color: rgba(255,255,255,0.60); margin-bottom: 8px; font-weight: 500;">البريد
+                                    الإلكتروني</label>
+                                <input type="email" name="email" dir="ltr" placeholder="you@example.com" required
+                                    style="width: 100%; padding: 13px 16px; border-radius: 12px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: #fff; font-size: 15px; outline: none; transition: border-color 0.2s; box-sizing: border-box; font-family: inherit;"
+                                    onfocus="this.style.borderColor = '#8B5CF6'"
+                                    onblur="this.style.borderColor = 'rgba(255,255,255,0.08)'">
+                            </div>
+                        </div>
+
+                        <!-- Password -->
+                        <div>
+                            <label
+                                style="display: block; font-size: 13px; color: rgba(255,255,255,0.60); margin-bottom: 8px; font-weight: 500;">كلمة
+                                المرور</label>
+                            <div style="position: relative;">
+                                <input type="password" id="password-input" name="password" placeholder="8 أحرف أو أكثر"
+                                    required minlength="8"
+                                    style="width: 100%; padding: 13px 16px; border-radius: 12px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: #fff; font-size: 15px; outline: none; transition: border-color 0.2s; box-sizing: border-box; font-family: inherit; padding-left: 40px;"
+                                    onfocus="this.style.borderColor = '#8B5CF6'"
+                                    onblur="this.style.borderColor = 'rgba(255,255,255,0.08)'">
+                                <button type="button" id="toggle-pw" tabindex="-1"
+                                    style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: rgba(255,255,255,0.30); transition: color 0.2s; padding: 4px;"
+                                    onmouseenter="this.style.color='rgba(255,255,255,0.70)'"
+                                    onmouseleave="this.style.color='rgba(255,255,255,0.30)'">
+                                    <i data-lucide="eye" id="eye-icon" style="width: 17px; height: 17px;"></i>
+                                    <i data-lucide="eye-off" id="eye-off-icon"
+                                        style="width: 17px; height: 17px; display: none;"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Business type -->
+                        <div>
+                            <label
+                                style="display: block; font-size: 13px; color: rgba(255,255,255,0.60); margin-bottom: 8px; font-weight: 500;">نوع
+                                عملك</label>
+                            <select name="type" required
+                                style="width: 100%; padding: 13px 16px; border-radius: 12px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: #fff; font-size: 15px; outline: none; transition: border-color 0.2s; box-sizing: border-box; font-family: inherit; appearance: none; cursor: pointer;"
+                                onfocus="this.style.borderColor = '#8B5CF6'"
+                                onblur="this.style.borderColor = 'rgba(255,255,255,0.08)'">
+                                <option value="" style="background: #13131A; color: #fff;">اختر نوع عملك</option>
+                                <option value="restaurant" style="background: #13131A; color: #fff;">🍔 مطعم / مقهى
+                                </option>
+                                <option value="salon" style="background: #13131A; color: #fff;">💇 صالون / تجميل
+                                </option>
+                                <option value="ecommerce" style="background: #13131A; color: #fff;">🛍️ تجارة إلكترونية
+                                </option>
+                                <option value="realestate" style="background: #13131A; color: #fff;">🏢 عقارات</option>
+                                <option value="services" style="background: #13131A; color: #fff;">⚙️ خدمات</option>
+                                <option value="retail" style="background: #13131A; color: #fff;">🏪 تجزئة</option>
+                                <option value="other" style="background: #13131A; color: #fff;">أخرى</option>
+                            </select>
+                        </div>
+
+                        <!-- Submit -->
+                        <button type="submit" class="btn-primary"
+                            style="display: flex; align-items: center; justify-content: center; gap: 10px; padding: 14px; font-size: 15px; border-radius: 12px; cursor: pointer; border: none; position: relative; width: 100%;">
+                            <i data-lucide="zap" style="width: 17px; height: 17px; position: relative; z-index: 1;"></i>
+                            <span style="position: relative; z-index: 1;">إنشاء حساب مجاني</span>
+                        </button>
+
+                        <p style="text-align: center; color: rgba(255,255,255,0.25); font-size: 12px;">
+                            بالتسجيل توافق على
+                            <a href="#" style="color: #a78bfa; text-decoration: none;">شروط الاستخدام</a>
+                            و<a href="#" style="color: #a78bfa; text-decoration: none;">سياسة الخصوصية</a>
+                        </p>
+                    </form>
+                </div>
+
+                <!-- Sidebar -->
+                <div class="register-sidebar"
+                    style="position: sticky; top: 96px; display: flex; flex-direction: column; gap: 16px;">
+                    <!-- Benefits -->
+                    <div class="glass" style="padding: 24px; border-radius: 20px;">
+                        <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 20px;">
+                            <div
+                                style="width: 40px; height: 40px; border-radius: 12px; background: rgba(139,92,246,0.15); display: flex; align-items: center; justify-content: center; color: #a78bfa; flex-shrink: 0;">
+                                <i data-lucide="shield-check" style="width: 20px; height: 20px;"></i>
+                            </div>
+                            <div>
+                                <p style="font-weight: 700; font-size: 14px; color: #fff; margin-bottom: 3px;">بدون
+                                    مخاطر</p>
+                                <p style="color: rgba(255,255,255,0.35); font-size: 12px;">أسبوعان مجانًا — لا بطاقة</p>
+                            </div>
+                        </div>
+                        <ul style="list-style: none; display: flex; flex-direction: column; gap: 10px;">
+                            <li style="display: flex; align-items: center; gap: 10px; font-size: 13px;"><i
+                                    data-lucide="check-circle-2"
+                                    style="width: 14px; height: 14px; color: #a78bfa; flex-shrink: 0;"></i><span
+                                    style="color: rgba(255,255,255,0.55);">صندوق وارد موحد</span></li>
+                            <li style="display: flex; align-items: center; gap: 10px; font-size: 13px;"><i
+                                    data-lucide="check-circle-2"
+                                    style="width: 14px; height: 14px; color: #a78bfa; flex-shrink: 0;"></i><span
+                                    style="color: rgba(255,255,255,0.55);">4 قنوات تواصل</span></li>
+                            <li style="display: flex; align-items: center; gap: 10px; font-size: 13px;"><i
+                                    data-lucide="check-circle-2"
+                                    style="width: 14px; height: 14px; color: #a78bfa; flex-shrink: 0;"></i><span
+                                    style="color: rgba(255,255,255,0.55);">لوحة تحليلات</span></li>
+                            <li style="display: flex; align-items: center; gap: 10px; font-size: 13px;"><i
+                                    data-lucide="check-circle-2"
+                                    style="width: 14px; height: 14px; color: #a78bfa; flex-shrink: 0;"></i><span
+                                    style="color: rgba(255,255,255,0.55);">دعم فني كامل</span></li>
+                            <li style="display: flex; align-items: center; gap: 10px; font-size: 13px;"><i
+                                    data-lucide="check-circle-2"
+                                    style="width: 14px; height: 14px; color: #a78bfa; flex-shrink: 0;"></i><span
+                                    style="color: rgba(255,255,255,0.55);">إعداد مجاني</span></li>
+                        </ul>
+                    </div>
+
+                    <!-- Testimonial -->
+                    <div class="glass" style="padding: 24px; border-radius: 20px;">
+                        <div
+                            style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 9999px; background: rgba(52,211,153,0.10); color: #34d399; font-size: 11px; margin-bottom: 16px; border: 1px solid rgba(52,211,153,0.15);">
+                            <div style="width: 6px; height: 6px; border-radius: 50%; background: #34d399;"
+                                class="animate-ping"></div>
+                            مباشر
+                        </div>
+                        <p
+                            style="color: rgba(255,255,255,0.55); font-size: 13px; line-height: 1.8; font-style: italic; margin-bottom: 16px;">
+                            "خلال ساعة واحدة فريقنا بدأ يرد من مكان واحد — بدون تعقيدات."
+                        </p>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <div
+                                style="width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(135deg, rgba(139,92,246,0.30), rgba(251,191,36,0.30)); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 13px; font-weight: 700; flex-shrink: 0;">
+                                م</div>
+                            <div>
+                                <p style="font-size: 12px; font-weight: 700; color: #fff;">منى — صاحبة صالون</p>
+                                <p style="font-size: 11px; color: rgba(255,255,255,0.30); margin-top: 2px;">جدة</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Stats -->
+                    <div class="glass" style="padding: 20px 24px; border-radius: 20px; text-align: center;">
+                        <p style="color: rgba(255,255,255,0.30); font-size: 12px; margin-bottom: 6px;">انضم إلى</p>
+                        <p
+                            style="font-size: 2rem; font-weight: 900; background: linear-gradient(135deg, #8B5CF6, #FBBF24); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                            50+</p>
+                        <p style="color: rgba(255,255,255,0.30); font-size: 12px; margin-top: 4px;">شركة سعودية تثق بنا
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Plan URL Parameter
+            const urlParams = new URLSearchParams(window.location.search);
+            const initialPlan = urlParams.get('plan') || 'team';
+
+            const btnTeam = document.getElementById('plan-team-btn');
+            const btnBusiness = document.getElementById('plan-business-btn');
+            const planInput = document.getElementById('selected-plan');
+
+            function setPlan(planId) {
+                planInput.value = planId;
+                if (planId === 'team') {
+                    btnTeam.style.border = '1.5px solid rgba(139,92,246,0.50)';
+                    btnTeam.style.background = 'rgba(139,92,246,0.10)';
+                    btnTeam.style.color = '#c4b5fd';
+                    btnBusiness.style.border = '1px solid rgba(255,255,255,0.08)';
+                    btnBusiness.style.background = 'transparent';
+                    btnBusiness.style.color = 'rgba(255,255,255,0.40)';
+                } else {
+                    btnBusiness.style.border = '1.5px solid rgba(139,92,246,0.50)';
+                    btnBusiness.style.background = 'rgba(139,92,246,0.10)';
+                    btnBusiness.style.color = '#c4b5fd';
+                    btnTeam.style.border = '1px solid rgba(255,255,255,0.08)';
+                    btnTeam.style.background = 'transparent';
+                    btnTeam.style.color = 'rgba(255,255,255,0.40)';
+                }
+            }
+
+            setPlan(initialPlan === 'business' ? 'business' : 'team');
+
+            btnTeam.addEventListener('click', () => setPlan('team'));
+            btnBusiness.addEventListener('click', () => setPlan('business'));
+
+            // Toggle Password Visibility
+            const togglePwBtn = document.getElementById('toggle-pw');
+            const pwInput = document.getElementById('password-input');
+            const eyeIcon = document.getElementById('eye-icon');
+            const eyeOffIcon = document.getElementById('eye-off-icon');
+
+            togglePwBtn.addEventListener('click', () => {
+                const type = pwInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                pwInput.setAttribute('type', type);
+                if (type === 'text') {
+                    eyeIcon.style.display = 'none';
+                    eyeOffIcon.style.display = 'block';
+                } else {
+                    eyeIcon.style.display = 'block';
+                    eyeOffIcon.style.display = 'none';
+                }
+            });
+
+            // Form Submit Simulation
+            const regForm = document.getElementById('reg-form');
+            const formContainer = document.getElementById('registration-form');
+            const successContainer = document.getElementById('success-message');
+
+            regForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                formContainer.style.display = 'none';
+                successContainer.style.display = 'flex';
+                successContainer.style.animation = 'fadeUp 0.6s ease both';
+            });
+        });
+    </script>
+</body>
+
+</html>
