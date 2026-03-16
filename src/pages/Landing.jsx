@@ -1,19 +1,57 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import {
     MessageCircle, Facebook, Send, Instagram,
-    Inbox, Users, BarChart3, Zap, MessageSquare, Clock,
-    AlertTriangle, UserX, TrendingDown,
-    ChevronDown, ChevronUp, Star, Quote,
-    ArrowLeft, CheckCircle2
+    Inbox, Users, BarChart2, Zap, MessageSquare, ShieldCheck,
+    Star, ChevronDown, ChevronUp, ArrowLeft, CheckCircle2,
+    Clock, ArrowUpRight, Bot
 } from 'lucide-react';
-import AnimateOnScroll from '../components/AnimateOnScroll';
 
+/* ─── Reveal component ─── */
+function Reveal({ children, delay = 0, className = '' }) {
+    const ref = useRef(null);
+    const [visible, setVisible] = useState(false);
+
+    useEffect(() => {
+        const io = new IntersectionObserver(
+            ([e]) => { if (e.isIntersecting) { setVisible(true); io.disconnect(); } },
+            { threshold: 0.05, rootMargin: '0px 0px -40px 0px' }
+        );
+        if (ref.current) io.observe(ref.current);
+        return () => io.disconnect();
+    }, []);
+
+    return (
+        <div
+            ref={ref}
+            className={className}
+            style={{
+                opacity: visible ? 1 : 0,
+                transform: visible ? 'translateY(0)' : 'translateY(20px)',
+                transition: `opacity 0.6s ease ${delay}ms, transform 0.6s ease ${delay}ms`,
+                willChange: 'opacity, transform',
+            }}
+        >
+            {children}
+        </div>
+    );
+}
+
+/* ─── Shared container ─── */
+function Container({ children, className = '' }) {
+    return (
+        <div style={{ maxWidth: '1152px', margin: '0 auto', padding: '0 20px' }} className={className}>
+            {children}
+        </div>
+    );
+}
+
+/* ─── entry ─── */
 export default function Landing() {
     return (
-        <div>
+        <>
             <HeroSection />
-            <SocialProofBar />
+            <MarqueeBar />
             <ProblemSection />
             <SolutionSection />
             <FeaturesSection />
@@ -21,666 +59,576 @@ export default function Landing() {
             <TestimonialsSection />
             <FAQSection />
             <FinalCTA />
-        </div>
+        </>
     );
 }
 
-/* ───────────────────── HERO ───────────────────── */
+/* ─────────────────── HERO ─────────────────── */
+const WORDS = ['واتساب', 'فيسبوك', 'تيليغرام', 'إنستغرام'];
+
 function HeroSection() {
-    const fullText = 'توقّف عن فتح 5 تطبيقات لخدمة عملائك';
-    const [displayText, setDisplayText] = useState('');
-    const [showCursor, setShowCursor] = useState(true);
+    const [wordIdx, setWordIdx] = useState(0);
+    const [fade, setFade] = useState(true);
 
     useEffect(() => {
-        let i = 0;
-        const interval = setInterval(() => {
-            if (i <= fullText.length) {
-                setDisplayText(fullText.slice(0, i));
-                i++;
-            } else {
-                clearInterval(interval);
-                setTimeout(() => setShowCursor(false), 1500);
-            }
-        }, 50);
-        return () => clearInterval(interval);
+        const id = setInterval(() => {
+            setFade(false);
+            setTimeout(() => {
+                setWordIdx(i => (i + 1) % WORDS.length);
+                setFade(true);
+            }, 300);
+        }, 2200);
+        return () => clearInterval(id);
     }, []);
 
     return (
-        <section className="relative min-h-screen flex items-center pt-20 overflow-hidden">
-            {/* Background Effects */}
-            <div className="absolute inset-0">
-                <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-teal-400/10 rounded-full blur-3xl" />
-                <div className="absolute bottom-1/4 left-1/4 w-80 h-80 bg-teal-400/5 rounded-full blur-3xl" />
-                <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top_right,_rgba(0,212,170,0.08)_0%,_transparent_60%)]" />
+        <section style={{ position: 'relative', minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start', paddingTop: '120px', paddingBottom: '80px', paddingLeft: '20px', paddingRight: '20px', overflow: 'hidden', textAlign: 'center' }}>
+            {/* BG glows */}
+            <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
+                <div style={{ position: 'absolute', top: '-10%', right: '-10%', width: '600px', height: '600px', borderRadius: '50%', background: 'rgba(109,40,217,0.10)', filter: 'blur(120px)' }} className="animate-glow-pulse" />
+                <div style={{ position: 'absolute', bottom: 0, left: '-5%', width: '400px', height: '400px', borderRadius: '50%', background: 'rgba(245,158,11,0.08)', filter: 'blur(100px)' }} className="animate-glow-pulse delay-400" />
+                <div style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
             </div>
 
-            <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-20">
-                <div className="grid lg:grid-cols-2 gap-12 items-center">
-                    {/* Text Content */}
-                    <div>
-                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-400/10 border border-teal-400/20 text-teal-400 text-sm mb-6">
-                            <Zap size={14} />
-                            <span>أول 3 أشهر بخصم 50% للعملاء الأوائل</span>
-                        </div>
+            {/* Content wrapper */}
+            <div style={{ position: 'relative', zIndex: 10, width: '100%', maxWidth: '900px', margin: '0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
 
-                        <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-extrabold leading-tight mb-6">
-                            {displayText}
-                            {showCursor && <span className="animate-blink text-teal-400">|</span>}
-                        </h1>
-
-                        <p className="text-lg sm:text-xl text-slate-300 leading-relaxed mb-8 max-w-lg">
-                            أدِر واتساب وفيسبوك وتيليغرام من صندوق وارد واحد — وفريق واحد — ولوحة تحكم واحدة
-                        </p>
-
-                        <div className="flex flex-col sm:flex-row gap-4">
-                            <Link
-                                to="/register?plan=team"
-                                className="px-8 py-4 bg-teal-400 hover:bg-teal-500 text-navy-950 rounded-xl text-lg font-bold transition-all hover:shadow-lg hover:shadow-teal-400/25 text-center animate-pulse-glow"
-                            >
-                                ابدأ مجانًا لأسبوعين
-                            </Link>
-                            <Link
-                                to="/features"
-                                className="px-8 py-4 border border-white/20 hover:border-teal-400/50 text-white rounded-xl text-lg font-medium transition-all hover:bg-white/5 text-center flex items-center justify-center gap-2"
-                            >
-                                شاهد كيف يعمل
-                                <ArrowLeft size={18} />
-                            </Link>
-                        </div>
+                {/* Badge */}
+                <Reveal>
+                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '8px 16px', borderRadius: '9999px', background: 'rgba(139,92,246,0.10)', border: '1px solid rgba(139,92,246,0.20)', color: '#c4b5fd', fontSize: '14px', marginBottom: '32px' }}>
+                        <Zap size={13} style={{ fill: '#a78bfa', color: '#a78bfa' }} />
+                        <span>أول 3 أشهر بخصم 50% للعملاء الأوائل</span>
+                        <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#a78bfa' }} className="animate-ping" />
                     </div>
+                </Reveal>
 
-                    {/* Mockup Illustration */}
-                    <div className="hidden lg:block">
-                        <InboxMockup />
+                {/* H1 */}
+                <Reveal delay={100}>
+                    <h1 style={{ fontSize: 'clamp(2.2rem, 6vw, 4.5rem)', fontWeight: 900, lineHeight: 1.15, marginBottom: '24px', color: '#fff' }}>
+                        توقّف عن فتح{' '}
+                        <span
+                            className="gradient-text"
+                            style={{ display: 'inline-block', transition: 'opacity 0.3s, transform 0.3s', opacity: fade ? 1 : 0, transform: fade ? 'translateY(0)' : 'translateY(8px)' }}
+                        >
+                            {WORDS[wordIdx]}
+                        </span>
+                        <br />
+                        تطبيقات لخدمة عملائك
+                    </h1>
+                </Reveal>
+
+                {/* Subtitle */}
+                <Reveal delay={150}>
+                    <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: '1.125rem', lineHeight: 1.8, maxWidth: '600px', marginBottom: '40px' }}>
+                        أدِر واتساب وفيسبوك وتيليغرام من صندوق وارد واحد —<br />
+                        وفريق واحد — ولوحة تحكم واحدة
+                    </p>
+                </Reveal>
+
+                {/* CTAs */}
+                <Reveal delay={220}>
+                    <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center', gap: '16px', marginBottom: '60px' }}>
+                        <Link to="/register?plan=team" className="btn-primary" style={{ padding: '14px 32px', fontSize: '15px', display: 'inline-flex', alignItems: 'center', gap: '8px', position: 'relative' }}>
+                            <Zap size={16} style={{ position: 'relative', zIndex: 1 }} />
+                            <span style={{ position: 'relative', zIndex: 1 }}>ابدأ مجانًا لأسبوعين</span>
+                        </Link>
+                        <Link to="/features" className="btn-outline" style={{ padding: '14px 32px', fontSize: '15px', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                            شاهد كيف يعمل
+                            <ArrowLeft size={16} />
+                        </Link>
                     </div>
+                </Reveal>
+
+                {/* Inbox card */}
+                <div style={{ width: '100%', maxWidth: '480px', margin: '0 auto' }}>
+                    <Reveal delay={350}>
+                        <InboxCard />
+                    </Reveal>
                 </div>
             </div>
         </section>
     );
 }
 
-function InboxMockup() {
-    const messages = [
-        { channel: 'whatsapp', color: 'bg-whatsapp', name: 'أحمد محمد', text: 'مرحبًا، هل التوصيل متاح اليوم؟', time: 'الآن' },
-        { channel: 'facebook', color: 'bg-facebook', name: 'سارة العلي', text: 'أريد حجز موعد يوم الخميس', time: '2 د' },
-        { channel: 'telegram', color: 'bg-telegram', name: 'خالد السعود', text: 'ما هي أسعار الباقة العائلية؟', time: '5 د' },
-        { channel: 'instagram', gradient: true, name: 'نورة الحربي', text: 'هل يوجد لون آخر من هذا المنتج؟', time: '8 د' },
+/* ─────────────────── INBOX CARD ─────────────────── */
+function InboxCard() {
+    const msgs = [
+        { bg: '#25D366', icon: <MessageCircle size={13} />, name: 'أحمد العتيبي', text: 'وين وصل الطلب؟', time: 'الآن', dot: true },
+        { bg: '#1877F2', icon: <Facebook size={13} />, name: 'منى الشهري', text: 'أريد حجز موعد قص شعر', time: 'دقيقتين' },
+        { bg: '#0088CC', icon: <Send size={13} />, name: 'خالد القرني', text: 'ما هي أسعاركم الجديدة؟', time: '5 د' },
+        { bg: null, gradient: true, icon: <Instagram size={13} />, name: 'سارة المالكي', text: 'هل المنتج موجود؟ 👀', time: '12 د' },
     ];
 
-    const channelIcons = {
-        whatsapp: <MessageCircle size={14} />,
-        facebook: <Facebook size={14} />,
-        telegram: <Send size={14} />,
-        instagram: <Instagram size={14} />,
-    };
+    return (
+        <div className="animate-float glass noise" style={{ position: 'relative', overflow: 'hidden', borderRadius: '20px', boxShadow: '0 25px 50px rgba(109,40,217,0.20)', width: '100%' }}>
+            {/* Title bar */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '14px 20px', borderBottom: '1px solid rgba(255,255,255,0.06)', direction: 'rtl' }}>
+                <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: 'rgba(248,113,113,0.6)' }} />
+                <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: 'rgba(251,191,36,0.6)' }} />
+                <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: 'rgba(52,211,153,0.6)' }} />
+                <span style={{ color: 'rgba(255,255,255,0.30)', fontSize: '12px', display: 'inline-flex', alignItems: 'center', gap: '6px', marginRight: '8px' }}>
+                    <Inbox size={12} />
+                    صندوق الوارد الموحد
+                </span>
+                <span style={{ marginLeft: 'auto', fontSize: '11px', padding: '2px 8px', borderRadius: '9999px', background: 'rgba(139,92,246,0.15)', color: '#c4b5fd', border: '1px solid rgba(139,92,246,0.20)' }} className="animate-badge-pop">
+                    4 جديد
+                </span>
+            </div>
+
+            {/* Messages */}
+            <div style={{ padding: '12px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                {msgs.map((m, i) => (
+                    <div key={i} className="inbox-msg" style={{
+                        display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 12px', borderRadius: '12px',
+                        border: i === 0 ? '1px solid rgba(139,92,246,0.15)' : '1px solid transparent',
+                        background: i === 0 ? 'rgba(139,92,246,0.08)' : 'transparent',
+                        direction: 'rtl',
+                    }}>
+                        {/* Channel avatar */}
+                        <div style={{
+                            width: '36px', height: '36px', borderRadius: '50%', flexShrink: 0,
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            color: '#fff', fontSize: '12px',
+                            background: m.gradient
+                                ? 'linear-gradient(135deg, #F58529, #E1306C, #833AB4)'
+                                : m.bg,
+                        }}>
+                            {m.icon}
+                        </div>
+                        {/* Text */}
+                        <div style={{ flex: 1, minWidth: 0, textAlign: 'right' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2px' }}>
+                                <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.35)' }}>{m.time}</span>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                    {m.dot && <div style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#a78bfa', flexShrink: 0 }} />}
+                                    <span style={{ fontSize: '13px', fontWeight: 700, color: '#fff' }}>{m.name}</span>
+                                </div>
+                            </div>
+                            <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.45)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{m.text}</p>
+                        </div>
+                    </div>
+                ))}
+            </div>
+
+            {/* Reply bar */}
+            <div style={{ padding: '8px 16px 16px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 12px', borderRadius: '12px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)', direction: 'rtl' }}>
+                    <span style={{ flex: 1, fontSize: '12px', color: 'rgba(255,255,255,0.25)', textAlign: 'right' }}>اكتب ردًا...</span>
+                    <div style={{ width: '28px', height: '28px', borderRadius: '8px', background: 'rgba(139,92,246,0.20)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#a78bfa', flexShrink: 0 }}>
+                        <Send size={13} />
+                    </div>
+                </div>
+            </div>
+
+            {/* Glow */}
+            <div style={{ position: 'absolute', bottom: '-40px', left: '50%', transform: 'translateX(-50%)', width: '240px', height: '80px', background: 'rgba(139,92,246,0.20)', filter: 'blur(40px)', borderRadius: '50%', pointerEvents: 'none' }} />
+        </div>
+    );
+}
+
+/* ─────────────────── MARQUEE BAR ─────────────────── */
+function MarqueeBar() {
+    const items = [
+        { icon: <MessageCircle size={16} />, label: 'WhatsApp Business API', color: '#25D366' },
+        { icon: <Facebook size={16} />, label: 'Facebook Messenger', color: '#1877F2' },
+        { icon: <Send size={16} />, label: 'Telegram Bot', color: '#0088CC' },
+        { icon: <Instagram size={16} />, label: 'Instagram DM', color: '#f472b6' },
+        { icon: <Clock size={16} />, label: 'وفّر 3 ساعات يوميًا', color: '#fbbf24' },
+        { icon: <BarChart2 size={16} />, label: 'تحليلات فورية', color: '#a78bfa' },
+        { icon: <Users size={16} />, label: 'توزيع تلقائي', color: '#34d399' },
+        { icon: <ShieldCheck size={16} />, label: 'بيانات آمنة 100%', color: '#fbbf24' },
+    ];
+    const doubled = [...items, ...items];
 
     return (
-        <div className="animate-float">
-            <div className="glass-card p-6 max-w-md mx-auto">
-                {/* Header */}
-                <div className="flex items-center justify-between mb-4 pb-3 border-b border-white/10">
-                    <div className="flex items-center gap-2">
-                        <Inbox size={18} className="text-teal-400" />
-                        <span className="font-bold text-sm">صندوق الوارد الموحد</span>
-                    </div>
-                    <span className="text-xs text-teal-400 bg-teal-400/10 px-2 py-1 rounded-full">
-                        4 رسائل جديدة
+        <div style={{ borderTop: '1px solid rgba(255,255,255,0.05)', borderBottom: '1px solid rgba(255,255,255,0.05)', background: '#0D0D12', overflow: 'hidden', padding: '16px 0', position: 'relative' }}>
+            <div style={{ position: 'absolute', right: 0, top: 0, width: '96px', height: '100%', background: 'linear-gradient(to left, #0D0D12, transparent)', zIndex: 10, pointerEvents: 'none' }} />
+            <div style={{ position: 'absolute', left: 0, top: 0, width: '96px', height: '100%', background: 'linear-gradient(to right, #0D0D12, transparent)', zIndex: 10, pointerEvents: 'none' }} />
+            <div className="animate-marquee" style={{ display: 'flex', gap: '40px', whiteSpace: 'nowrap' }} dir="ltr">
+                {doubled.map((item, i) => (
+                    <span key={i} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', fontSize: '14px', flexShrink: 0, color: item.color }}>
+                        {item.icon}
+                        <span style={{ color: 'rgba(255,255,255,0.55)' }}>{item.label}</span>
                     </span>
-                </div>
-
-                {/* Messages */}
-                <div className="space-y-3">
-                    {messages.map((msg, i) => (
-                        <div
-                            key={i}
-                            className="flex items-start gap-3 p-3 rounded-xl bg-white/5 hover:bg-white/8 transition-all cursor-pointer group"
-                            style={{ animationDelay: `${i * 150}ms` }}
-                        >
-                            <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white shrink-0 ${msg.gradient
-                                    ? 'bg-gradient-to-br from-[#F58529] via-[#DD2A7B] to-[#8134AF]'
-                                    : msg.color
-                                }`}>
-                                {channelIcons[msg.channel]}
-                            </div>
-                            <div className="flex-1 min-w-0">
-                                <div className="flex items-center justify-between gap-2">
-                                    <span className="text-sm font-semibold truncate">{msg.name}</span>
-                                    <span className="text-xs text-slate-500 shrink-0">{msg.time}</span>
-                                </div>
-                                <p className="text-xs text-slate-400 truncate mt-0.5">{msg.text}</p>
-                            </div>
-                        </div>
-                    ))}
-                </div>
+                ))}
             </div>
         </div>
     );
 }
 
-/* ───────────────────── SOCIAL PROOF ───────────────────── */
-function SocialProofBar() {
-    const channels = [
-        { icon: <MessageCircle size={20} />, label: 'WhatsApp', color: 'text-whatsapp' },
-        { icon: <Facebook size={20} />, label: 'Facebook', color: 'text-facebook' },
-        { icon: <Send size={20} />, label: 'Telegram', color: 'text-telegram' },
-        { icon: <Instagram size={20} />, label: 'Instagram', color: 'text-pink-500' },
-    ];
-
+/* ─────────────────── SECTION WRAPPER ─────────────────── */
+function Section({ children, bg, id }) {
     return (
-        <section className="border-y border-white/5 bg-navy-900/50">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
-                    <div className="flex items-center gap-6 sm:gap-10 flex-wrap justify-center">
-                        {channels.map((ch, i) => (
-                            <div key={i} className={`flex items-center gap-2 ${ch.color}`}>
-                                {ch.icon}
-                                <span className="text-sm font-medium text-slate-300" dir="ltr">{ch.label}</span>
-                            </div>
-                        ))}
-                    </div>
-                    <div className="flex items-center gap-2 text-teal-400">
-                        <Clock size={18} />
-                        <span className="text-sm font-bold">وفّر 3 ساعات يوميًا</span>
-                    </div>
-                </div>
-            </div>
+        <section id={id} style={{ padding: '96px 0', background: bg || 'transparent' }}>
+            <Container>
+                {children}
+            </Container>
         </section>
     );
 }
 
-/* ───────────────────── PROBLEM ───────────────────── */
+function SectionHeader({ tag, tagColor = '#a78bfa', title, subtitle }) {
+    return (
+        <Reveal>
+            <div style={{ textAlign: 'center', marginBottom: '64px' }}>
+                <span style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '0.15em', color: tagColor, textTransform: 'uppercase' }}>{tag}</span>
+                <h2 style={{ fontSize: 'clamp(1.75rem, 4vw, 3rem)', fontWeight: 900, marginTop: '12px', marginBottom: '16px', lineHeight: 1.2, color: '#fff' }}>{title}</h2>
+                {subtitle && <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: '1.1rem', maxWidth: '520px', margin: '0 auto' }}>{subtitle}</p>}
+            </div>
+        </Reveal>
+    );
+}
+
+/* ─────────────────── PROBLEM ─────────────────── */
 function ProblemSection() {
-    const problems = [
-        {
-            icon: <AlertTriangle size={28} />,
-            title: 'رسائل ضائعة',
-            desc: 'عملاء يراسلونك ولا أحد يرد — لأن الرسالة ضاعت بين التطبيقات',
-            color: 'text-red-400',
-            bg: 'bg-red-400/10',
-        },
-        {
-            icon: <UserX size={28} />,
-            title: 'فريق مشتت',
-            desc: 'كل موظف يرد من جواله — ولا أحد يعرف من رد على من',
-            color: 'text-amber-400',
-            bg: 'bg-amber-400/10',
-        },
-        {
-            icon: <TrendingDown size={28} />,
-            title: 'لا تحكم على الأداء',
-            desc: 'بدون بيانات — كيف تعرف أن فريقك يرد بسرعة ويبيع؟',
-            color: 'text-orange-400',
-            bg: 'bg-orange-400/10',
-        },
+    const cards = [
+        { emoji: '📱', num: '5', title: 'تطبيقات مفتوحة', desc: 'تتنقل بين الواتساب والفيسبوك وتيليغرام وإنستغرام — وكل تطبيق جرس منفصل', from: 'rgba(239,68,68,0.10)', to: 'rgba(127,29,29,0.05)', border: 'rgba(239,68,68,0.10)' },
+        { emoji: '😤', num: '40%', title: 'رسائل بدون رد', desc: 'رسائل عملاء تضيع بين الموظفين ولا أحد يعرف مَن مسؤول عن الرد', from: 'rgba(245,158,11,0.10)', to: 'rgba(120,53,15,0.05)', border: 'rgba(245,158,11,0.10)' },
+        { emoji: '🤷', num: 'صفر', title: 'بيانات أداء', desc: 'لا تعرف سرعة الرد، ولا من يرد، ولا كم عميلًا تم تحويله — قرارات عمياء', from: 'rgba(139,92,246,0.10)', to: 'rgba(76,29,149,0.05)', border: 'rgba(139,92,246,0.10)' },
     ];
 
     return (
-        <section className="py-20 sm:py-28">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <AnimateOnScroll>
-                    <div className="text-center mb-14">
-                        <h2 className="text-3xl sm:text-4xl font-extrabold mb-4">
-                            هل تواجه هذه المشاكل؟
-                        </h2>
-                        <p className="text-slate-400 text-lg max-w-2xl mx-auto">
-                            كل يوم تخسر عملاء لأنك تدير رسائلك من 5 تطبيقات مختلفة
-                        </p>
-                    </div>
-                </AnimateOnScroll>
-
-                <div className="grid md:grid-cols-3 gap-6">
-                    {problems.map((p, i) => (
-                        <AnimateOnScroll key={i} delay={i * 150}>
-                            <div className="glass-card glass-card-hover p-8 text-center h-full">
-                                <div className={`w-16 h-16 rounded-2xl ${p.bg} flex items-center justify-center ${p.color} mx-auto mb-5`}>
-                                    {p.icon}
-                                </div>
-                                <h3 className="text-xl font-bold mb-3">{p.title}</h3>
-                                <p className="text-slate-400 leading-relaxed">{p.desc}</p>
-                            </div>
-                        </AnimateOnScroll>
-                    ))}
-                </div>
+        <Section>
+            <SectionHeader tag="المشكلة" title="هل يحدث هذا معك كل يوم؟" subtitle="كل رسالة ضائعة تكلفك عميلًا — وكل تطبيق إضافي يكلفك وقتًا" />
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
+                {cards.map((card, i) => (
+                    <Reveal key={i} delay={i * 100}>
+                        <div style={{ borderRadius: '16px', padding: '28px', background: `linear-gradient(135deg, ${card.from}, ${card.to})`, border: `1px solid ${card.border}`, height: '100%' }}>
+                            <div style={{ fontSize: '48px', marginBottom: '16px' }}>{card.emoji}</div>
+                            <div className="gradient-text" style={{ fontSize: '2rem', fontWeight: 900, marginBottom: '6px' }}>{card.num}</div>
+                            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#fff', marginBottom: '10px' }}>{card.title}</h3>
+                            <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: '14px', lineHeight: 1.7 }}>{card.desc}</p>
+                        </div>
+                    </Reveal>
+                ))}
             </div>
-        </section>
+        </Section>
     );
 }
 
-/* ───────────────────── SOLUTION ───────────────────── */
+/* ─────────────────── SOLUTION ─────────────────── */
 function SolutionSection() {
-    const [activeTab, setActiveTab] = useState(0);
+    const [active, setActive] = useState(0);
+
     const tabs = [
         {
-            label: 'صندوق وارد موحد',
-            icon: <Inbox size={20} />,
-            title: 'كل الرسائل في مكان واحد',
-            desc: 'اجمع رسائل واتساب وفيسبوك وتيليغرام وإنستغرام في صندوق وارد واحد. لن تفوتك رسالة عميل أبدًا.',
-            features: ['عرض جميع المحادثات', 'تصنيف حسب القناة', 'أولوية تلقائية', 'بحث شامل'],
+            icon: <Inbox size={18} />, label: 'صندوق موحد',
+            headline: 'كل رسائلك — شاشة واحدة',
+            body: 'واتساب، فيسبوك، تيليغرام، إنستغرام — كلها تصل لمكان واحد. فريقك يرد من لوحة تحكم موحدة بدون تبديل تطبيقات.',
+            points: ['عرض موحد لكل القنوات', 'تصنيف تلقائي بالأولوية', 'ملف عميل موحد', 'بحث فوري في كل المحادثات'],
         },
         {
-            label: 'توزيع المهام',
-            icon: <Users size={20} />,
-            title: 'وزّع المحادثات على فريقك',
-            desc: 'عيّن محادثات لموظفين محددين — تلقائيًا أو يدويًا. كل عميل يحصل على اهتمام كامل.',
-            features: ['توزيع تلقائي', 'تعيين يدوي', 'حالات المحادثة', 'إشعارات فورية'],
+            icon: <Users size={18} />, label: 'توزيع ذكي',
+            headline: 'وزّع — تلقائيًا أو يدويًا',
+            body: 'كل محادثة تروح للشخص الصح تلقائيًا. تعيين يدوي بنقرة. لا يوجد "اللي يرد أول".',
+            points: ['توزيع حسب القناة أو القسم', 'تعيين يدوي بنقرة واحدة', 'حالات المحادثة الكاملة', 'إشعارات فورية للموظف'],
         },
         {
-            label: 'تحليلات',
-            icon: <BarChart3 size={20} />,
-            title: 'اعرف كل شيء عن أداء فريقك',
-            desc: 'لوحة تحكم تعرض سرعة الرد وعدد المحادثات ومستوى رضا العملاء — بيانات حقيقية لقرارات ذكية.',
-            features: ['سرعة الرد', 'معدل الإغلاق', 'تقارير يومية', 'تصدير البيانات'],
+            icon: <BarChart2 size={18} />, label: 'تحليلات',
+            headline: 'بيانات — لا تخمينات',
+            body: 'تقارير يومية على متوسط الرد، أعداد المحادثات، الموظفين الأكثر إنتاجية — لتتخذ قرارات بثقة.',
+            points: ['متوسط سرعة الرد', 'معدل إغلاق المحادثات', 'تقارير يومية وأسبوعية', 'تصدير Excel/CSV'],
         },
     ];
 
     return (
-        <section className="py-20 sm:py-28 bg-navy-900/30">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <AnimateOnScroll>
-                    <div className="text-center mb-14">
-                        <span className="text-teal-400 text-sm font-bold">الحل</span>
-                        <h2 className="text-3xl sm:text-4xl font-extrabold mt-2 mb-4">
-                            كيف يحل Weoryx هذه المشاكل؟
-                        </h2>
-                        <p className="text-slate-400 text-lg max-w-2xl mx-auto">
-                            منصة واحدة تجمع كل قنوات التواصل مع أدوات إدارة فريق وتحليلات متقدمة
-                        </p>
-                    </div>
-                </AnimateOnScroll>
+        <Section bg="#0D0D12">
+            <SectionHeader tag="الحل" tagColor="#34d399" title="ثلاث أدوات — حل واحد" />
 
-                <AnimateOnScroll>
-                    {/* Tabs */}
-                    <div className="flex flex-wrap justify-center gap-3 mb-10">
-                        {tabs.map((tab, i) => (
-                            <button
-                                key={i}
-                                onClick={() => setActiveTab(i)}
-                                className={`flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-medium transition-all ${activeTab === i
-                                        ? 'bg-teal-400 text-navy-950'
-                                        : 'bg-white/5 text-slate-300 hover:bg-white/10'
-                                    }`}
-                            >
-                                {tab.icon}
-                                {tab.label}
-                            </button>
-                        ))}
-                    </div>
+            <Reveal>
+                {/* Tabs */}
+                <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginBottom: '32px', flexWrap: 'wrap' }}>
+                    {tabs.map((t, i) => (
+                        <button key={i} onClick={() => setActive(i)} style={{
+                            display: 'inline-flex', alignItems: 'center', gap: '8px',
+                            padding: '10px 20px', borderRadius: '12px', fontSize: '14px', fontWeight: 600,
+                            border: active === i ? '1px solid rgba(139,92,246,0.40)' : '1px solid rgba(255,255,255,0.08)',
+                            background: active === i ? 'rgba(139,92,246,0.15)' : 'transparent',
+                            color: active === i ? '#c4b5fd' : 'rgba(255,255,255,0.50)',
+                            cursor: 'pointer', transition: 'all 0.2s',
+                        }}>
+                            {t.icon} {t.label}
+                        </button>
+                    ))}
+                </div>
 
-                    {/* Content */}
-                    <div className="glass-card p-8 sm:p-12">
-                        <div className="grid md:grid-cols-2 gap-10 items-center">
-                            <div>
-                                <h3 className="text-2xl sm:text-3xl font-bold mb-4">
-                                    {tabs[activeTab].title}
-                                </h3>
-                                <p className="text-slate-300 leading-relaxed mb-6">
-                                    {tabs[activeTab].desc}
-                                </p>
-                                <ul className="space-y-3">
-                                    {tabs[activeTab].features.map((f, i) => (
-                                        <li key={i} className="flex items-center gap-3 text-sm">
-                                            <CheckCircle2 size={16} className="text-teal-400 shrink-0" />
-                                            <span className="text-slate-200">{f}</span>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-
-                            {/* Illustration */}
-                            <div className="relative">
-                                <div className="aspect-[4/3] rounded-2xl bg-gradient-to-br from-teal-400/10 to-navy-800 border border-white/10 flex items-center justify-center">
-                                    <div className="text-center p-6">
-                                        <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-teal-400/20 flex items-center justify-center text-teal-400">
-                                            {tabs[activeTab].icon}
+                {/* Content */}
+                <div className="glass noise" style={{ padding: '40px', borderRadius: '20px' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '40px', alignItems: 'center' }}>
+                        <div>
+                            <h3 className="gradient-text-2" style={{ fontSize: '1.75rem', fontWeight: 900, marginBottom: '16px' }}>
+                                {tabs[active].headline}
+                            </h3>
+                            <p style={{ color: 'rgba(255,255,255,0.55)', lineHeight: 1.8, marginBottom: '28px', fontSize: '1rem' }}>
+                                {tabs[active].body}
+                            </p>
+                            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                                {tabs[active].points.map((p, i) => (
+                                    <li key={i} style={{ display: 'flex', alignItems: 'center', gap: '12px', fontSize: '14px' }}>
+                                        <div style={{ width: '20px', height: '20px', borderRadius: '50%', background: 'rgba(52,211,153,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                                            <CheckCircle2 size={12} style={{ color: '#34d399' }} />
                                         </div>
-                                        <p className="text-slate-400 text-sm">{tabs[activeTab].label}</p>
-                                    </div>
+                                        <span style={{ color: 'rgba(255,255,255,0.75)' }}>{p}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                        <div style={{ position: 'relative', aspectRatio: '4/3', borderRadius: '16px', background: 'linear-gradient(135deg, rgba(139,92,246,0.10), #13131A, rgba(245,158,11,0.05))', border: '1px solid rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+                            <div style={{ position: 'absolute', inset: 0, opacity: 0.3, background: 'radial-gradient(circle at 50% 50%, rgba(139,92,246,0.12), transparent 70%)' }} />
+                            <div style={{ textAlign: 'center', position: 'relative', zIndex: 1 }}>
+                                <div style={{ width: '64px', height: '64px', margin: '0 auto 12px', borderRadius: '16px', background: 'rgba(139,92,246,0.20)', border: '1px solid rgba(139,92,246,0.20)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#a78bfa' }}>
+                                    {tabs[active].icon}
                                 </div>
+                                <p style={{ color: 'rgba(255,255,255,0.30)', fontSize: '13px' }}>{tabs[active].label}</p>
                             </div>
                         </div>
                     </div>
-                </AnimateOnScroll>
-            </div>
-        </section>
+                </div>
+            </Reveal>
+        </Section>
     );
 }
 
-/* ───────────────────── FEATURES ───────────────────── */
+/* ─────────────────── FEATURES ─────────────────── */
 function FeaturesSection() {
     const features = [
-        {
-            icon: <Inbox size={24} />,
-            title: 'صندوق وارد موحد',
-            desc: 'اجمع كل رسائل عملائك من واتساب وفيسبوك وتيليغرام في شاشة واحدة',
-        },
-        {
-            icon: <MessageSquare size={24} />,
-            title: 'ردود سريعة',
-            desc: 'قوالب ردود جاهزة للأسئلة المتكررة — وفّر وقت فريقك',
-        },
-        {
-            icon: <Users size={24} />,
-            title: 'توزيع تلقائي',
-            desc: 'وزع المحادثات على فريقك تلقائيًا حسب القناة أو نوع الاستفسار',
-        },
-        {
-            icon: <BarChart3 size={24} />,
-            title: 'تحليلات متقدمة',
-            desc: 'تقارير يومية عن سرعة الرد وعدد المحادثات ورضا العملاء',
-        },
-        {
-            icon: <MessageCircle size={24} />,
-            title: 'تكامل واتساب API',
-            desc: 'ربط رسمي مع واتساب للأعمال — رسائل غير محدودة بدون حظر',
-        },
-        {
-            icon: <Zap size={24} />,
-            title: 'إشعارات فورية',
-            desc: 'تنبيهات لحظية لكل رسالة جديدة — لن يفوتك عميل',
-        },
+        { icon: <Inbox size={22} />, title: 'صندوق وارد موحد', desc: '4 قنوات — شاشة واحدة. لا رسالة تضيع.', color: '#a78bfa', bg: 'rgba(167,139,250,0.10)' },
+        { icon: <MessageSquare size={22} />, title: 'ردود سريعة', desc: 'قوالب جاهزة تختصر 80% من وقت الكتابة.', color: '#fbbf24', bg: 'rgba(251,191,36,0.10)' },
+        { icon: <Users size={22} />, title: 'إدارة الفريق', desc: 'عيّن محادثات — تلقائيًا أو يدويًا — لكل موظف.', color: '#34d399', bg: 'rgba(52,211,153,0.10)' },
+        { icon: <BarChart2 size={22} />, title: 'لوحة تحليلات', desc: 'تقارير يومية: سرعة الرد، الإغلاقات، الأداء.', color: '#60a5fa', bg: 'rgba(96,165,250,0.10)' },
+        { icon: <MessageCircle size={22} />, title: 'واتساب API رسمي', desc: 'ربط معتمد — رسائل غير محدودة بدون حظر.', color: '#25D366', bg: 'rgba(37,211,102,0.10)' },
+        { icon: <Bot size={22} />, title: 'AI (قريبًا)', desc: 'ردود تلقائية ذكية تفهم اللهجة السعودية.', color: '#f472b6', bg: 'rgba(244,114,182,0.10)' },
     ];
 
     return (
-        <section id="features" className="py-20 sm:py-28">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <AnimateOnScroll>
-                    <div className="text-center mb-14">
-                        <span className="text-teal-400 text-sm font-bold">المزايا</span>
-                        <h2 className="text-3xl sm:text-4xl font-extrabold mt-2 mb-4">
-                            كل ما تحتاجه لإدارة رسائلك
-                        </h2>
-                        <p className="text-slate-400 text-lg max-w-2xl mx-auto">
-                            أدوات متكاملة صممت خصيصًا للشركات السعودية الصغيرة والمتوسطة
-                        </p>
-                    </div>
-                </AnimateOnScroll>
-
-                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {features.map((f, i) => (
-                        <AnimateOnScroll key={i} delay={i * 100}>
-                            <div className="glass-card glass-card-hover p-7 h-full">
-                                <div className="w-12 h-12 rounded-xl bg-teal-400/10 flex items-center justify-center text-teal-400 mb-4">
-                                    {f.icon}
-                                </div>
-                                <h3 className="text-lg font-bold mb-2">{f.title}</h3>
-                                <p className="text-slate-400 text-sm leading-relaxed">{f.desc}</p>
+        <Section id="features">
+            <SectionHeader tag="المزايا" tagColor="#fbbf24" title="كل أداة تحتاجها" subtitle="صُممت للشركات السعودية — بسيطة، قوية، تعمل فورًا" />
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px' }}>
+                {features.map((f, i) => (
+                    <Reveal key={i} delay={i * 80}>
+                        <div className="glass glass-hover" style={{ padding: '28px', borderRadius: '20px', height: '100%', cursor: 'default' }}>
+                            <div style={{ width: '44px', height: '44px', borderRadius: '12px', background: f.bg, color: f.color, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px', transition: 'transform 0.2s' }}>
+                                {f.icon}
                             </div>
-                        </AnimateOnScroll>
-                    ))}
-                </div>
+                            <h3 style={{ fontSize: '15px', fontWeight: 700, color: '#fff', marginBottom: '8px' }}>{f.title}</h3>
+                            <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: '13px', lineHeight: 1.7 }}>{f.desc}</p>
+                        </div>
+                    </Reveal>
+                ))}
             </div>
-        </section>
+        </Section>
     );
 }
 
-/* ───────────────────── PRICING ───────────────────── */
+/* ─────────────────── PRICING ─────────────────── */
 function PricingSection() {
     const plans = [
         {
-            name: 'خطة الفريق',
-            price: '1,500',
-            desc: 'مثالية للمشاريع الصغيرة والفرق المكونة من 2-5 أشخاص',
-            features: [
-                'صندوق وارد موحد',
-                '3 قنوات تواصل',
-                'حتى 5 مستخدمين',
-                'ردود سريعة',
-                'تقارير أساسية',
-                'دعم فني عبر البريد',
-            ],
-            highlighted: false,
-            plan: 'team',
+            name: 'خطة الفريق', price: '1,500', discounted: '750',
+            features: ['صندوق وارد موحد', '3 قنوات', '5 مستخدمين', 'ردود سريعة', 'تقارير أساسية', 'دعم بريد إلكتروني'],
+            plan: 'team', featured: false,
         },
         {
-            name: 'خطة الأعمال',
-            price: '2,500',
-            desc: 'للشركات التي تحتاج تحكمًا أكبر وتحليلات متقدمة',
-            features: [
-                'كل مزايا خطة الفريق',
-                'جميع القنوات (4+)',
-                'حتى 15 مستخدم',
-                'توزيع تلقائي ذكي',
-                'تحليلات متقدمة',
-                'API مفتوح',
-                'دعم فني أولوية',
-                'مدير حساب مخصص',
-            ],
-            highlighted: true,
-            plan: 'business',
+            name: 'خطة الأعمال', price: '2,500', discounted: '1,250',
+            features: ['كل مزايا الفريق', 'جميع القنوات', '15 مستخدم', 'توزيع تلقائي', 'تحليلات متقدمة', 'API مفتوح', 'أولوية دعم', 'مدير حساب', 'محادثات لا محدودة', 'تدريب الفريق'],
+            plan: 'business', featured: true,
         },
     ];
 
     return (
-        <section id="pricing" className="py-20 sm:py-28 bg-navy-900/30">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <AnimateOnScroll>
-                    <div className="text-center mb-14">
-                        <span className="text-teal-400 text-sm font-bold">الأسعار</span>
-                        <h2 className="text-3xl sm:text-4xl font-extrabold mt-2 mb-4">
-                            أقل من راتب موظف واحد — وأكثر فاعلية بمراحل
-                        </h2>
-                        <p className="text-slate-400 text-lg max-w-2xl mx-auto">
-                            اختر الخطة المناسبة لحجم عملك — وابدأ بأسبوعين مجانًا
-                        </p>
-                    </div>
-                </AnimateOnScroll>
-
-                <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-                    {plans.map((plan, i) => (
-                        <AnimateOnScroll key={i} delay={i * 200}>
-                            <div className={`relative rounded-2xl p-8 h-full flex flex-col ${plan.highlighted
-                                    ? 'bg-gradient-to-b from-teal-400/10 to-navy-800 border-2 border-teal-400/30'
-                                    : 'glass-card'
-                                }`}>
-                                {plan.highlighted && (
-                                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-teal-400 text-navy-950 rounded-full text-xs font-bold">
-                                        الأكثر طلبًا
-                                    </div>
-                                )}
-
-                                {/* Discount Badge */}
-                                <div className="inline-flex self-start items-center gap-1 px-3 py-1 rounded-full bg-amber-400/10 text-amber-400 text-xs font-bold mb-4">
-                                    <Zap size={12} />
-                                    خصم 50% لأول 3 أشهر
+        <Section id="pricing" bg="#0D0D12">
+            <SectionHeader
+                tag="الأسعار"
+                title={<>أقل من راتب موظف واحد —<br />وأكثر فاعلية بمراحل</>}
+                subtitle="ابدأ بأسبوعين مجانًا — لا بطاقة ائتمانية"
+            />
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px', maxWidth: '760px', margin: '0 auto' }}>
+                {plans.map((p, i) => (
+                    <Reveal key={i} delay={i * 130}>
+                        <div style={{
+                            position: 'relative', borderRadius: '16px', padding: '32px',
+                            display: 'flex', flexDirection: 'column', height: '100%',
+                            background: p.featured ? 'linear-gradient(180deg, rgba(139,92,246,0.08), #13131A)' : 'rgba(255,255,255,0.03)',
+                            border: p.featured ? '1px solid rgba(139,92,246,0.30)' : '1px solid rgba(255,255,255,0.08)',
+                        }}>
+                            {p.featured && (
+                                <div style={{ position: 'absolute', top: '-14px', left: '50%', transform: 'translateX(-50%)', padding: '4px 16px', borderRadius: '9999px', background: '#7C3AED', color: '#fff', fontSize: '12px', fontWeight: 700, whiteSpace: 'nowrap' }}>
+                                    الأكثر طلبًا ⭐
                                 </div>
+                            )}
 
-                                <h3 className="text-xl font-bold mb-2">{plan.name}</h3>
-                                <p className="text-slate-400 text-sm mb-6">{plan.desc}</p>
-
-                                <div className="flex items-baseline gap-1 mb-6">
-                                    <span className="text-4xl font-extrabold text-teal-400">{plan.price}</span>
-                                    <span className="text-slate-400">ريال/شهر</span>
-                                </div>
-
-                                <ul className="space-y-3 mb-8 flex-1">
-                                    {plan.features.map((f, j) => (
-                                        <li key={j} className="flex items-center gap-2 text-sm">
-                                            <CheckCircle2 size={16} className="text-teal-400 shrink-0" />
-                                            <span className="text-slate-200">{f}</span>
-                                        </li>
-                                    ))}
-                                </ul>
-
-                                <Link
-                                    to={`/register?plan=${plan.plan}`}
-                                    className={`block w-full text-center py-3.5 rounded-xl font-bold transition-all ${plan.highlighted
-                                            ? 'bg-teal-400 hover:bg-teal-500 text-navy-950 hover:shadow-lg hover:shadow-teal-400/25'
-                                            : 'bg-white/10 hover:bg-white/15 text-white'
-                                        }`}
-                                >
-                                    ابدأ مجانًا لأسبوعين
-                                </Link>
+                            <div style={{ display: 'inline-flex', alignSelf: 'flex-start', alignItems: 'center', gap: '6px', padding: '4px 12px', borderRadius: '9999px', background: 'rgba(251,191,36,0.10)', color: '#fbbf24', fontSize: '12px', fontWeight: 700, marginBottom: '16px', border: '1px solid rgba(251,191,36,0.15)' }}>
+                                <Zap size={11} /> خصم 50% — 3 أشهر
                             </div>
-                        </AnimateOnScroll>
-                    ))}
-                </div>
+
+                            <h3 style={{ fontSize: '1.25rem', fontWeight: 900, color: '#fff', marginBottom: '6px' }}>{p.name}</h3>
+
+                            <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px', margin: '16px 0' }}>
+                                <span className={p.featured ? 'gradient-text' : ''} style={{ fontSize: '2.5rem', fontWeight: 900, color: p.featured ? undefined : '#fff' }}>{p.discounted}</span>
+                                <span style={{ color: 'rgba(255,255,255,0.40)', fontSize: '13px' }}>ريال/شهر</span>
+                                <span style={{ color: 'rgba(255,255,255,0.25)', fontSize: '12px', textDecoration: 'line-through', marginRight: '4px' }}>{p.price}</span>
+                            </div>
+
+                            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '32px', flex: 1 }}>
+                                {p.features.map((f, j) => (
+                                    <li key={j} style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '13px' }}>
+                                        <CheckCircle2 size={15} style={{ color: p.featured ? '#a78bfa' : '#34d399', flexShrink: 0 }} />
+                                        <span style={{ color: 'rgba(255,255,255,0.65)' }}>{f}</span>
+                                    </li>
+                                ))}
+                            </ul>
+
+                            <Link to={`/register?plan=${p.plan}`}
+                                className={p.featured ? 'btn-primary' : 'btn-outline'}
+                                style={{ display: 'block', textAlign: 'center', padding: '14px', borderRadius: '12px', fontWeight: 700, fontSize: '14px', position: 'relative' }}>
+                                {p.featured && <span style={{ position: 'absolute', inset: 0, borderRadius: '12px' }} />}
+                                <span style={{ position: 'relative', zIndex: 1 }}>ابدأ مجانًا لأسبوعين</span>
+                            </Link>
+                        </div>
+                    </Reveal>
+                ))}
             </div>
-        </section>
+        </Section>
     );
 }
 
-/* ───────────────────── TESTIMONIALS ───────────────────── */
+/* ─────────────────── TESTIMONIALS ─────────────────── */
 function TestimonialsSection() {
-    const testimonials = [
-        {
-            quote: 'كنا نضيع ساعات يوميًا بين الواتساب والإنستغرام. الآن كل شيء في مكان واحد وفريقنا أسرع بمرتين.',
-            name: 'عبدالله الراشد',
-            role: 'صاحب مطعم — الرياض',
-            stars: 5,
-        },
-        {
-            quote: 'أخيرًا أقدر أعرف كم رسالة يرد عليها كل موظف وكم عميل نخسره. البيانات غيّرت طريقة إدارتي.',
-            name: 'نوف المطيري',
-            role: 'مديرة صالون — جدة',
-            stars: 5,
-        },
-        {
-            quote: 'الحجوزات زادت 40% بعد ما صرنا نرد على كل رسالة بسرعة. قبل كذا كنا نفقد زبائن كثير.',
-            name: 'محمد الغامدي',
-            role: 'مدير تجزئة — الدمام',
-            stars: 5,
-        },
+    const items = [
+        { quote: 'كنا نفقد 30% من العملاء لأن الرسائل تضيع. بعد Weoryx ما فات علينا رسالة واحدة.', name: 'عبدالرحمن الرشيد', role: 'مطعم — الرياض', stars: 5 },
+        { quote: 'فريقي من 3 موظفين صار يتعامل مع ضعف عدد العملاء بنفس الوقت. الأداة غيّرت كل شيء.', name: 'منيرة الحربي', role: 'صالون فاخر — جدة', stars: 5 },
+        { quote: 'التقارير أقنعتني أن 60% من عملائي يراسلون ليلًا — حلينا ذلك بردود تلقائية.', name: 'سلطان العمري', role: 'متجر إلكتروني — الدمام', stars: 5 },
     ];
 
     return (
-        <section className="py-20 sm:py-28">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <AnimateOnScroll>
-                    <div className="text-center mb-14">
-                        <span className="text-teal-400 text-sm font-bold">انطباعات العملاء</span>
-                        <h2 className="text-3xl sm:text-4xl font-extrabold mt-2 mb-4">
-                            ماذا يقول عملاؤنا؟
-                        </h2>
-                    </div>
-                </AnimateOnScroll>
-
-                <div className="grid md:grid-cols-3 gap-6">
-                    {testimonials.map((t, i) => (
-                        <AnimateOnScroll key={i} delay={i * 150}>
-                            <div className="glass-card p-7 h-full flex flex-col">
-                                <div className="flex gap-1 mb-4">
-                                    {[...Array(t.stars)].map((_, j) => (
-                                        <Star key={j} size={16} className="fill-amber-400 text-amber-400" />
-                                    ))}
+        <Section>
+            <SectionHeader tag="آراء العملاء" tagColor="#34d399" title="ماذا يقولون عنا؟" />
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
+                {items.map((t, i) => (
+                    <Reveal key={i} delay={i * 100}>
+                        <div className="glass" style={{ padding: '28px', borderRadius: '20px', display: 'flex', flexDirection: 'column', height: '100%' }}>
+                            <div style={{ display: 'flex', gap: '2px', marginBottom: '16px' }}>
+                                {[...Array(t.stars)].map((_, j) => (
+                                    <Star key={j} size={14} style={{ fill: '#fbbf24', color: '#fbbf24' }} />
+                                ))}
+                            </div>
+                            <p style={{ color: 'rgba(255,255,255,0.70)', lineHeight: 1.8, fontSize: '14px', flex: 1, marginBottom: '20px', fontStyle: 'italic' }}>
+                                "{t.quote}"
+                            </p>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', paddingTop: '16px', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+                                <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: 'linear-gradient(135deg, rgba(167,139,250,0.30), rgba(251,191,36,0.30))', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: '14px', fontWeight: 700, flexShrink: 0 }}>
+                                    {t.name[0]}
                                 </div>
-                                <Quote size={24} className="text-teal-400/30 mb-3" />
-                                <p className="text-slate-200 leading-relaxed flex-1 mb-5">
-                                    {t.quote}
-                                </p>
-                                <div className="pt-4 border-t border-white/10">
-                                    <p className="font-bold text-sm">{t.name}</p>
-                                    <p className="text-slate-400 text-xs mt-1">{t.role}</p>
+                                <div>
+                                    <p style={{ fontSize: '14px', fontWeight: 700, color: '#fff' }}>{t.name}</p>
+                                    <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.35)', marginTop: '2px' }}>{t.role}</p>
                                 </div>
                             </div>
-                        </AnimateOnScroll>
-                    ))}
-                </div>
+                        </div>
+                    </Reveal>
+                ))}
             </div>
-        </section>
+        </Section>
     );
 }
 
-/* ───────────────────── FAQ ───────────────────── */
+/* ─────────────────── FAQ ─────────────────── */
 function FAQSection() {
     const [open, setOpen] = useState(null);
-
     const faqs = [
-        {
-            q: 'هل يدعم الذكاء الاصطناعي؟',
-            a: 'نعم! نعمل على إضافة ردود تلقائية ذكية باستخدام الذكاء الاصطناعي ستكون متاحة قريبًا ضمن خطة الأعمال.',
-        },
-        {
-            q: 'هل يمكنني الإلغاء في أي وقت؟',
-            a: 'بالتأكيد. لا يوجد عقد طويل الأمد — يمكنك الإلغاء في أي وقت من لوحة التحكم.',
-        },
-        {
-            q: 'هل أحتاج WhatsApp Business API؟',
-            a: 'نساعدك في الحصول على حساب واتساب للأعمال API وربطه بالمنصة — الفريق الفني يقوم بالإعداد الكامل.',
-        },
-        {
-            q: 'كم يستغرق تفعيل الحساب؟',
-            a: 'يمكنك البدء فورًا مع فيسبوك وتيليغرام. واتساب يحتاج 24-48 ساعة للتفعيل.',
-        },
-        {
-            q: 'هل البيانات آمنة؟',
-            a: 'نستخدم تشفير SSL وخوادم سحابية معتمدة. بياناتك محمية وفقًا لأعلى معايير الأمان.',
-        },
-        {
-            q: 'هل يوجد تطبيق جوال؟',
-            a: 'المنصة تعمل على المتصفح بشكل كامل ومتجاوب مع الجوال. تطبيق مخصص قادم قريبًا.',
-        },
+        { q: 'هل يدعم الذكاء الاصطناعي؟', a: 'قريبًا! نعمل على ردود تلقائية بالذكاء الاصطناعي تفهم اللهجة السعودية والخليجية — ستتوفر ضمن خطة الأعمال.' },
+        { q: 'هل يمكن الإلغاء في أي وقت؟', a: 'نعم. لا عقود ولا التزامات — تلغي الاشتراك بنقرة واحدة من لوحة التحكم.' },
+        { q: 'هل أحتاج WhatsApp Business API؟', a: 'نعم، لكننا نساعدك في الحصول عليه وربطه خلال 24-48 ساعة — مجانًا ضمن الاشتراك.' },
+        { q: 'كم يستغرق التفعيل؟', a: 'فيسبوك وتيليغرام فورية. واتساب 24-48 ساعة. فريقنا يرافقك في كل خطوة.' },
+        { q: 'هل البيانات آمنة؟', a: 'تشفير SSL كامل، خوادم في المملكة، امتثال كامل لنظام حماية البيانات الشخصية السعودي.' },
+        { q: 'هل يعمل على الجوال؟', a: 'المنصة متجاوبة 100% مع الجوال عبر المتصفح. تطبيق iOS وAndroid في الطريق.' },
     ];
 
     return (
-        <section id="faq" className="py-20 sm:py-28 bg-navy-900/30">
-            <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-                <AnimateOnScroll>
-                    <div className="text-center mb-14">
-                        <span className="text-teal-400 text-sm font-bold">أسئلة شائعة</span>
-                        <h2 className="text-3xl sm:text-4xl font-extrabold mt-2 mb-4">
-                            هل عندك سؤال؟
-                        </h2>
-                    </div>
-                </AnimateOnScroll>
-
-                <div className="space-y-3">
-                    {faqs.map((faq, i) => (
-                        <AnimateOnScroll key={i} delay={i * 80}>
-                            <div className="glass-card overflow-hidden">
-                                <button
-                                    onClick={() => setOpen(open === i ? null : i)}
-                                    className="w-full flex items-center justify-between p-5 text-right hover:bg-white/5 transition-colors"
-                                >
-                                    <span className="font-bold text-sm sm:text-base">{faq.q}</span>
-                                    {open === i ? (
-                                        <ChevronUp size={18} className="text-teal-400 shrink-0 mr-3" />
-                                    ) : (
-                                        <ChevronDown size={18} className="text-slate-400 shrink-0 mr-3" />
-                                    )}
+        <Section id="faq" bg="#0D0D12">
+            <div style={{ maxWidth: '640px', margin: '0 auto' }}>
+                <SectionHeader tag="FAQ" title="أسئلة شائعة" />
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    {faqs.map((f, i) => (
+                        <Reveal key={i} delay={i * 50}>
+                            <div style={{
+                                borderRadius: '16px', overflow: 'hidden',
+                                border: open === i ? '1px solid rgba(139,92,246,0.25)' : '1px solid rgba(255,255,255,0.06)',
+                                background: open === i ? 'rgba(139,92,246,0.04)' : 'rgba(255,255,255,0.03)',
+                                transition: 'border-color 0.2s, background 0.2s',
+                            }}>
+                                <button onClick={() => setOpen(open === i ? null : i)} style={{
+                                    width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                                    padding: '18px 20px', textAlign: 'right', cursor: 'pointer',
+                                    background: 'transparent', border: 'none', color: '#fff',
+                                }}>
+                                    <span style={{ fontWeight: 700, fontSize: '15px' }}>{f.q}</span>
+                                    <div style={{
+                                        width: '28px', height: '28px', borderRadius: '50%', flexShrink: 0, marginRight: '12px',
+                                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                        background: open === i ? 'rgba(139,92,246,0.20)' : 'rgba(255,255,255,0.05)',
+                                        color: open === i ? '#a78bfa' : 'rgba(255,255,255,0.40)',
+                                        transition: 'all 0.2s',
+                                    }}>
+                                        {open === i ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
+                                    </div>
                                 </button>
-                                <div className={`transition-all duration-300 overflow-hidden ${open === i ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'
-                                    }`}>
-                                    <p className="px-5 pb-5 text-slate-400 text-sm leading-relaxed">
-                                        {faq.a}
-                                    </p>
+                                <div style={{
+                                    maxHeight: open === i ? '200px' : '0',
+                                    overflow: 'hidden', transition: 'max-height 0.3s ease',
+                                }}>
+                                    <p style={{ padding: '0 20px 18px', color: 'rgba(255,255,255,0.50)', fontSize: '14px', lineHeight: 1.8 }}>{f.a}</p>
                                 </div>
                             </div>
-                        </AnimateOnScroll>
+                        </Reveal>
                     ))}
                 </div>
             </div>
-        </section>
+        </Section>
     );
 }
 
-/* ───────────────────── FINAL CTA ───────────────────── */
+/* ─────────────────── FINAL CTA ─────────────────── */
 function FinalCTA() {
     return (
-        <section className="py-20 sm:py-28">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <AnimateOnScroll>
-                    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-teal-400/20 to-navy-800 border border-teal-400/20 p-10 sm:p-16 text-center">
-                        {/* BG glow */}
-                        <div className="absolute top-0 right-0 w-72 h-72 bg-teal-400/10 rounded-full blur-3xl" />
-                        <div className="absolute bottom-0 left-0 w-60 h-60 bg-teal-400/5 rounded-full blur-3xl" />
+        <Section>
+            <Reveal>
+                <div style={{
+                    position: 'relative', overflow: 'hidden', borderRadius: '24px', padding: '80px 40px',
+                    textAlign: 'center', border: '1px solid rgba(139,92,246,0.15)',
+                    background: 'linear-gradient(135deg, rgba(139,92,246,0.08) 0%, rgba(13,13,18,1) 60%, rgba(251,191,36,0.05) 100%)',
+                }}>
+                    <div style={{ position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)', width: '384px', height: '160px', background: 'rgba(139,92,246,0.15)', filter: 'blur(60px)', borderRadius: '50%', pointerEvents: 'none' }} />
+                    <div style={{ position: 'absolute', bottom: 0, left: '50%', transform: 'translateX(-50%)', width: '256px', height: '128px', background: 'rgba(251,191,36,0.08)', filter: 'blur(60px)', borderRadius: '50%', pointerEvents: 'none' }} />
 
-                        <div className="relative">
-                            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold mb-6 leading-tight">
-                                انضم إلى الشركات السعودية<br />التي تدير رسائلها بذكاء
-                            </h2>
-                            <p className="text-slate-300 text-lg mb-8 max-w-xl mx-auto">
-                                ابدأ تجربتك المجانية اليوم — أسبوعان كاملان بدون أي التزام
-                            </p>
-                            <Link
-                                to="/register?plan=team"
-                                className="inline-block px-10 py-4 bg-teal-400 hover:bg-teal-500 text-navy-950 rounded-xl text-lg font-bold transition-all hover:shadow-lg hover:shadow-teal-400/25"
-                            >
-                                ابدأ مجانًا الآن
+                    <div style={{ position: 'relative' }}>
+                        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '8px 16px', borderRadius: '9999px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.10)', color: 'rgba(255,255,255,0.60)', fontSize: '13px', marginBottom: '32px' }}>
+                            <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#34d399' }} className="animate-ping" />
+                            50+ شركة سعودية تستخدم Weoryx الآن
+                        </div>
+
+                        <h2 style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', fontWeight: 900, marginBottom: '24px', lineHeight: 1.2, color: '#fff' }}>
+                            انضم إليهم —<br />
+                            <span className="gradient-text">ابدأ اليوم مجانًا</span>
+                        </h2>
+
+                        <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: '1.1rem', marginBottom: '40px', maxWidth: '480px', margin: '0 auto 40px' }}>
+                            أسبوعان مجانًا — لا بطاقة ائتمانية — إلغاء في أي وقت
+                        </p>
+
+                        <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center', gap: '16px' }}>
+                            <Link to="/register?plan=team" className="btn-primary" style={{ padding: '16px 40px', fontSize: '16px', display: 'inline-flex', alignItems: 'center', gap: '10px', position: 'relative' }}>
+                                <Zap size={18} style={{ position: 'relative', zIndex: 1 }} />
+                                <span style={{ position: 'relative', zIndex: 1 }}>ابدأ مجانًا الآن</span>
+                            </Link>
+                            <Link to="/pricing" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', color: 'rgba(255,255,255,0.50)', fontSize: '14px', textDecoration: 'none', transition: 'color 0.2s' }}>
+                                مقارنة الخطط
+                                <ArrowUpRight size={16} />
                             </Link>
                         </div>
                     </div>
-                </AnimateOnScroll>
-            </div>
-        </section>
+                </div>
+            </Reveal>
+        </Section>
     );
 }

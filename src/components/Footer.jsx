@@ -2,98 +2,123 @@ import { Link } from 'react-router-dom';
 import { MessageCircle, Facebook, Send, Instagram } from 'lucide-react';
 
 export default function Footer() {
+    const sections = [
+        {
+            title: 'المنصة', links: [
+                { to: '/features', label: 'المزايا' },
+                { to: '/pricing', label: 'الأسعار' },
+                { to: '/register?plan=team', label: 'تجربة مجانية' },
+            ]
+        },
+        {
+            title: 'الدعم', links: [
+                { to: '/#faq', label: 'الأسئلة الشائعة' },
+                { href: 'mailto:help@weoryx.com', label: 'الدعم الفني' },
+                { href: 'mailto:sales@weoryx.com', label: 'فريق المبيعات' },
+            ]
+        },
+        {
+            title: 'قانوني', links: [
+                { to: '#', label: 'سياسة الخصوصية' },
+                { to: '#', label: 'شروط الاستخدام' },
+                { to: '#', label: 'اتفاقيات SLA' },
+            ]
+        },
+    ];
+
+    const channels = [
+        { icon: <MessageCircle size={16} />, bg: 'rgba(37,211,102,0.12)', color: '#25D366', label: 'WhatsApp' },
+        { icon: <Facebook size={16} />, bg: 'rgba(24,119,242,0.12)', color: '#1877F2', label: 'Facebook' },
+        { icon: <Send size={16} />, bg: 'rgba(0,136,204,0.12)', color: '#0088CC', label: 'Telegram' },
+        { icon: <Instagram size={16} />, bg: 'rgba(244,114,182,0.12)', color: '#f472b6', label: 'Instagram' },
+    ];
+
+    const linkStyle = {
+        color: 'rgba(255,255,255,0.40)', fontSize: '14px',
+        textDecoration: 'none', lineHeight: 1,
+        transition: 'color 0.2s', display: 'block',
+    };
+
     return (
-        <footer className="bg-navy-900 border-t border-white/5">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
-                    {/* Brand */}
-                    <div className="sm:col-span-2 lg:col-span-1">
-                        <Link to="/" className="flex items-center gap-2 mb-4">
-                            <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-teal-400 to-teal-600 flex items-center justify-center text-navy-950 font-bold text-lg">
-                                W
+        <footer style={{ background: '#0D0D12', borderTop: '1px solid rgba(255,255,255,0.05)', marginTop: 0 }}>
+            {/* Top gradient line */}
+            <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgba(139,92,246,0.35), transparent)' }} />
+
+            <div style={{ maxWidth: '1152px', margin: '0 auto', padding: '64px 32px 48px' }}>
+                {/* Main grid */}
+                <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', gap: '48px', marginBottom: '48px' }}>
+                    {/* Brand col */}
+                    <div>
+                        <Link to="/" style={{ display: 'inline-flex', alignItems: 'center', gap: '12px', textDecoration: 'none', marginBottom: '16px' }}>
+                            <div style={{ position: 'relative', width: '36px', height: '36px', flexShrink: 0 }}>
+                                <div style={{ position: 'absolute', inset: 0, borderRadius: '10px', background: 'linear-gradient(135deg, #8B5CF6, #F59E0B)' }} />
+                                <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 900, fontSize: '16px' }}>W</div>
                             </div>
-                            <span className="text-xl font-bold text-white">Weoryx</span>
+                            <span style={{ fontWeight: 700, color: '#fff', fontSize: '16px' }}>Weoryx Connect</span>
                         </Link>
-                        <p className="text-slate-400 text-sm leading-relaxed">
-                            منصة إدارة رسائل العملاء الموحدة للشركات السعودية. أدر جميع قنوات التواصل من مكان واحد.
+                        <p style={{ color: 'rgba(255,255,255,0.38)', fontSize: '14px', lineHeight: 1.75, maxWidth: '260px', marginBottom: '24px' }}>
+                            منصة موحدة لإدارة رسائل عملاء الشركات السعودية الصغيرة والمتوسطة عبر جميع القنوات.
                         </p>
-                        <div className="flex gap-3 mt-5">
-                            <ChannelBadge icon={<MessageCircle size={16} />} color="bg-whatsapp" />
-                            <ChannelBadge icon={<Facebook size={16} />} color="bg-facebook" />
-                            <ChannelBadge icon={<Send size={16} />} color="bg-telegram" />
-                            <ChannelBadge icon={<Instagram size={16} />} gradient />
+                        {/* Channel pills */}
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                            {channels.map((c, i) => (
+                                <div key={i} style={{
+                                    display: 'inline-flex', alignItems: 'center', gap: '6px',
+                                    padding: '6px 12px', borderRadius: '9999px',
+                                    background: c.bg, color: c.color, fontSize: '12px',
+                                }}>
+                                    {c.icon}
+                                    <span dir="ltr">{c.label}</span>
+                                </div>
+                            ))}
                         </div>
                     </div>
 
-                    {/* Links */}
-                    <div>
-                        <h4 className="text-white font-bold mb-4">المنصة</h4>
-                        <ul className="space-y-3 text-sm">
-                            <FooterLink to="/features" label="المزايا" />
-                            <FooterLink to="/pricing" label="الأسعار" />
-                            <FooterLink to="/register?plan=team" label="ابدأ مجانًا" />
-                            <FooterLink to="/login" label="تسجيل الدخول" />
-                        </ul>
-                    </div>
-
-                    <div>
-                        <h4 className="text-white font-bold mb-4">الدعم</h4>
-                        <ul className="space-y-3 text-sm">
-                            <FooterLink to="/#faq" label="الأسئلة الشائعة" />
-                            <FooterLink href="mailto:support@weoryx.com" label="الدعم الفني" />
-                            <FooterLink href="mailto:sales@weoryx.com" label="المبيعات" />
-                        </ul>
-                    </div>
-
-                    <div>
-                        <h4 className="text-white font-bold mb-4">قانوني</h4>
-                        <ul className="space-y-3 text-sm">
-                            <FooterLink to="#" label="سياسة الخصوصية" />
-                            <FooterLink to="#" label="شروط الاستخدام" />
-                            <FooterLink to="#" label="اتفاقية مستوى الخدمة" />
-                        </ul>
-                    </div>
+                    {sections.map((s, i) => (
+                        <div key={i}>
+                            <h5 style={{ color: '#fff', fontSize: '14px', fontWeight: 700, marginBottom: '20px', lineHeight: 1 }}>{s.title}</h5>
+                            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                                {s.links.map((l, j) => (
+                                    <li key={j}>
+                                        {l.href
+                                            ? <a href={l.href} style={linkStyle}
+                                                onMouseEnter={e => e.target.style.color = 'rgba(255,255,255,0.80)'}
+                                                onMouseLeave={e => e.target.style.color = 'rgba(255,255,255,0.40)'}>
+                                                {l.label}
+                                            </a>
+                                            : <Link to={l.to} style={linkStyle}
+                                                onMouseEnter={e => e.currentTarget.style.color = 'rgba(255,255,255,0.80)'}
+                                                onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.40)'}>
+                                                {l.label}
+                                            </Link>
+                                        }
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    ))}
                 </div>
 
-                <div className="mt-12 pt-8 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4">
-                    <p className="text-slate-500 text-sm">
+                {/* Bottom bar */}
+                <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgba(139,92,246,0.20), transparent)', marginBottom: '28px' }} />
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
+                    <p style={{ color: 'rgba(255,255,255,0.22)', fontSize: '13px' }}>
                         © {new Date().getFullYear()} Weoryx. جميع الحقوق محفوظة.
                     </p>
-                    <p className="text-slate-500 text-sm" dir="ltr">
+                    <p style={{ color: 'rgba(255,255,255,0.22)', fontSize: '13px' }} dir="ltr">
                         connect.weoryx.com
                     </p>
                 </div>
             </div>
+
+            {/* Responsive stacked grid */}
+            <style>{`
+                @media (max-width: 768px) {
+                    .footer-grid {
+                        grid-template-columns: 1fr 1fr !important;
+                    }
+                }
+            `}</style>
         </footer>
-    );
-}
-
-function FooterLink({ to, href, label }) {
-    if (href) {
-        return (
-            <li>
-                <a href={href} className="text-slate-400 hover:text-teal-400 transition-colors">
-                    {label}
-                </a>
-            </li>
-        );
-    }
-    return (
-        <li>
-            <Link to={to} className="text-slate-400 hover:text-teal-400 transition-colors">
-                {label}
-            </Link>
-        </li>
-    );
-}
-
-function ChannelBadge({ icon, color, gradient }) {
-    return (
-        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white ${gradient
-                ? 'bg-gradient-to-br from-[#F58529] via-[#DD2A7B] to-[#8134AF]'
-                : color
-            }`}>
-            {icon}
-        </div>
     );
 }

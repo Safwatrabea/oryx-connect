@@ -1,183 +1,198 @@
-import {
-    Inbox, Users, BarChart3, Zap, MessageSquare, MessageCircle,
-    Clock, Globe, Bot, Shield, Smartphone, ArrowLeft, CheckCircle2
-} from 'lucide-react';
+import { CheckCircle2, Zap, Bot } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import AnimateOnScroll from '../components/AnimateOnScroll';
+import { Inbox, Users, BarChart2, MessageSquare, MessageCircle } from 'lucide-react';
+
+/* ─── shared util ─── */
+function Container({ children }) {
+    return (
+        <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 32px' }}>
+            {children}
+        </div>
+    );
+}
+
+function FadeIn({ children, delay = 0 }) {
+    return (
+        <div style={{ animation: `fadeUp 0.6s ease ${delay}ms both` }}>
+            {children}
+        </div>
+    );
+}
+
+const features = [
+    {
+        icon: <Inbox size={28} />,
+        color: '#a78bfa', bg: 'rgba(167,139,250,0.10)', border: 'rgba(167,139,250,0.15)',
+        title: 'صندوق وارد موحد',
+        tagline: 'كل القنوات — شاشة واحدة',
+        desc: 'اجمع رسائل واتساب وفيسبوك وتيليغرام وإنستغرام في لوحة تحكم واحدة. فريقك يرى كل المحادثات بدون الحاجة لفتح تطبيق آخر.',
+        points: ['عرض موحد لكل القنوات في نفس الوقت', 'تصفية حسب القناة أو الحالة أو الموظف', 'ملف عميل موحد مع تاريخ التواصل', 'بحث فوري في كل المحادثات'],
+        useCase: '🍔 مطعم يستقبل طلبات من واتساب، حجوزات من فيسبوك، استفسارات من إنستغرام — كلها في شاشة واحدة لموظف واحد.',
+    },
+    {
+        icon: <MessageSquare size={28} />,
+        color: '#fbbf24', bg: 'rgba(251,191,36,0.10)', border: 'rgba(251,191,36,0.15)',
+        title: 'ردود سريعة وقوالب',
+        tagline: 'وفّر 80% من وقت الكتابة',
+        desc: 'أنشئ قوالب ردود لأكثر الأسئلة تكرارًا. اضغط اختصارًا واحدًا للرد بدلًا من الكتابة من البداية في كل مرة.',
+        points: ['قوالب غير محدودة قابلة للمشاركة', 'متغيرات تلقائية (اسم العميل، رقم الطلب)', 'اختصارات لوحة مفاتيح للردود السريعة', 'أيقونة إيموجي ووسائط مدعومة'],
+        useCase: '💇 صالون تجميل يرد على "كم سعر قص الشعر؟" بنقرة واحدة — لكل موظفة في الفريق.',
+    },
+    {
+        icon: <Users size={28} />,
+        color: '#34d399', bg: 'rgba(52,211,153,0.10)', border: 'rgba(52,211,153,0.15)',
+        title: 'إدارة الفريق والتوزيع',
+        tagline: 'المحادثة الصح — للشخص الصح',
+        desc: 'وزّع المحادثات على فريقك تلقائيًا وفق قواعد ذكية، أو عيّن يدويًا بنقرة. كل موظف يرى فقط ما يخصه.',
+        points: ['توزيع تلقائي حسب القناة/القسم/الدوام', 'تعيين يدوي فوري بنقرة واحدة', 'حالات المحادثة: جديد، قيد الرد، مغلق', 'إشعارات فورية للموظف عند التعيين'],
+        useCase: '🏢 شركة عقارات تحول استفسارات الشراء لقسم المبيعات وشكاوى الصيانة لقسم الخدمات — تلقائيًا.',
+    },
+    {
+        icon: <BarChart2 size={28} />,
+        color: '#60a5fa', bg: 'rgba(96,165,250,0.10)', border: 'rgba(96,165,250,0.15)',
+        title: 'تحليلات ولوحة بيانات',
+        tagline: 'قرارات بناءً على بيانات حقيقية',
+        desc: 'تقارير يومية وأسبوعية تعرض كل ما تحتاج معرفته عن أداء فريقك وحجم التعاملات.',
+        points: ['متوسط سرعة الرد لكل موظف', 'عدد المحادثات المفتوحة والمغلقة', 'معدل التحويل من رسالة لعملية بيع', 'تصدير التقارير Excel/CSV'],
+        useCase: '🛍️ مدير متجر إلكتروني يكتشف أن 70% من العملاء يراسلون بعد منتصف الليل — فيفعّل الردود التلقائية.',
+    },
+    {
+        icon: <MessageCircle size={28} />,
+        color: '#25D366', bg: 'rgba(37,211,102,0.10)', border: 'rgba(37,211,102,0.15)',
+        title: 'تكامل واتساب Business API',
+        tagline: 'رسائل رسمية — بدون حظر أبدًا',
+        desc: 'ربط معتمد مع Meta Business API للواتساب. رسائل غير محدودة، وسائط كاملة، شارة التوثيق.',
+        points: ['توثيق رسمي عبر Meta للأعمال', 'رسائل نصية + صور + فيديو + مستندات', 'إرسال رسائل مُبادَرة للعملاء', 'تاريخ رسائل كامل محفوظ'],
+        useCase: '🍕 مطعم يرسل عروض اليوم لكل عملائه عبر الواتساب — رسالة جماعية رسمية بدون خوف من الحظر.',
+    },
+    {
+        icon: <Bot size={28} />,
+        color: '#f472b6', bg: 'rgba(244,114,182,0.10)', border: 'rgba(244,114,182,0.15)',
+        title: 'ذكاء اصطناعي (قريبًا)',
+        tagline: 'الرد الذكي — حتى وأنت نائم',
+        desc: 'ردود تلقائية تفهم اللهجة السعودية والخليجية. تجيب على الأسئلة الشائعة وتصعّد للموظف عند الحاجة.',
+        points: ['فهم اللهجة السعودية والخليجية', 'رد تلقائي على أسئلة القائمة والأسعار', 'تصعيد ذكي للموظف عند الشكاوى', 'يتعلم من ردود فريقك بمرور الوقت'],
+        useCase: '☕ مقهى يرد على "وش عندكم حلو؟" الساعة 3 صباحًا بقائمة الحلويات كاملة — تلقائيًا.',
+        comingSoon: true,
+    },
+];
 
 export default function Features() {
-    const features = [
-        {
-            icon: <Inbox size={32} />,
-            title: 'صندوق وارد موحد',
-            desc: 'اجمع رسائل واتساب وفيسبوك وتيليغرام وإنستغرام في شاشة واحدة. تابع كل محادثة بترتيب زمني مع بيانات العميل الكاملة.',
-            details: [
-                'عرض جميع المحادثات من كل القنوات',
-                'تصنيف وفلترة حسب القناة أو الحالة',
-                'بحث شامل في كل الرسائل',
-                'ملف عميل موحد مع تاريخ المحادثات',
-            ],
-            useCase: 'صاحب مطعم يستقبل طلبات من واتساب وحجوزات من إنستغرام — يرد عليها كلها من شاشة واحدة.',
-        },
-        {
-            icon: <Users size={32} />,
-            title: 'توزيع المحادثات على الفريق',
-            desc: 'عيّن محادثات لموظفين محددين تلقائيًا أو يدويًا. كل عميل يحصل على الشخص المناسب.',
-            details: [
-                'توزيع تلقائي حسب القناة أو القسم',
-                'تعيين يدوي بنقرة واحدة',
-                'حالات المحادثة (جديد، قيد الرد، مُغلق)',
-                'إشعارات فورية للموظف المعيّن',
-            ],
-            useCase: 'صالون تجميل يوجّه استفسارات الأسعار لموظفة المبيعات، والشكاوى لمديرة الفرع — تلقائيًا.',
-        },
-        {
-            icon: <BarChart3 size={32} />,
-            title: 'تحليلات ولوحة تحكم',
-            desc: 'لوحة تحكم بيانات حقيقية تعرض كل ما تحتاجه لاتخاذ قرارات ذكية في إدارة فريقك.',
-            details: [
-                'متوسط سرعة الرد لكل موظف',
-                'عدد المحادثات المفتوحة والمغلقة',
-                'تقارير يومية وأسبوعية',
-                'تصدير البيانات إلى Excel',
-            ],
-            useCase: 'مدير متجر تجزئة يراجع أداء فريقه نهاية كل أسبوع — ويعرف من يحتاج تدريب.',
-        },
-        {
-            icon: <MessageSquare size={32} />,
-            title: 'ردود سريعة وقوالب',
-            desc: 'أنشئ قوالب ردود جاهزة للأسئلة المتكررة. وفّر ساعات يوميًا من كتابة نفس الردود.',
-            details: [
-                'إنشاء قوالب بلا حدود',
-                'اختصارات لوحة المفاتيح للردود',
-                'قوالب مع متغيرات (اسم العميل، رقم الطلب)',
-                'مشاركة القوالب بين الفريق',
-            ],
-            useCase: 'متجر إلكتروني يرد على "وين وصل طلبي؟" بنقرة واحدة مع رقم التتبع التلقائي.',
-        },
-        {
-            icon: <MessageCircle size={32} />,
-            title: 'تكامل واتساب للأعمال API',
-            desc: 'ربط رسمي ومعتمد مع واتساب — رسائل غير محدودة بدون خوف من الحظر.',
-            details: [
-                'ربط رسمي عبر Meta Business API',
-                'رسائل غير محدودة',
-                'دعم الوسائط (صور، فيديو، ملفات)',
-                'شارة التوثيق الخضراء',
-            ],
-            useCase: 'شركة عقارات ترسل صور العقارات وتستقبل استفسارات عبر واتساب — بدون حظر أو توقف.',
-        },
-        {
-            icon: <Bot size={32} />,
-            title: 'ذكاء اصطناعي (قريبًا)',
-            desc: 'ردود تلقائية ذكية تفهم أسئلة العملاء وترد عليها — حتى خارج أوقات العمل.',
-            details: [
-                'رد تلقائي على الأسئلة الشائعة',
-                'فهم اللهجة السعودية والخليجية',
-                'تصعيد تلقائي للموظف عند الحاجة',
-                'تعلّم من ردود فريقك',
-            ],
-            useCase: 'مطعم يرد على "وش عندكم اليوم؟" تلقائيًا بقائمة الطعام — الساعة 3 صباحًا.',
-            comingSoon: true,
-        },
-    ];
-
     return (
-        <div className="pt-24 sm:pt-32">
-            {/* Header */}
-            <section className="pb-16 sm:pb-20">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <AnimateOnScroll>
-                        <div className="text-center max-w-3xl mx-auto">
-                            <span className="text-teal-400 text-sm font-bold">تفاصيل المنصة</span>
-                            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold mt-3 mb-6 leading-tight">
-                                كل أداة تحتاجها لإدارة رسائل عملائك
+        <div style={{ paddingTop: '96px' }}>
+            <style>{`
+                @keyframes fadeUp {
+                    from { opacity: 0; transform: translateY(20px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+            `}</style>
+
+            {/* Page hero */}
+            <section style={{ padding: '72px 0 56px' }}>
+                <Container>
+                    <FadeIn>
+                        <div style={{ textAlign: 'center', maxWidth: '680px', margin: '0 auto' }}>
+                            <span style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '0.15em', color: '#a78bfa', textTransform: 'uppercase' }}>تفاصيل المنصة</span>
+                            <h1 style={{ fontSize: 'clamp(2rem, 4.5vw, 3rem)', fontWeight: 900, marginTop: '14px', marginBottom: '20px', lineHeight: 1.2, color: '#fff' }}>
+                                كل أداة — مشروحة بالتفصيل
                             </h1>
-                            <p className="text-slate-300 text-lg leading-relaxed">
-                                صممنا Weoryx خصيصًا للشركات السعودية — بأدوات بسيطة وقوية تساعدك على تقديم خدمة عملاء ممتازة
+                            <p style={{ color: 'rgba(255,255,255,0.50)', fontSize: '1.1rem', lineHeight: 1.75 }}>
+                                لا وعود فضفاضة. هنا شرح دقيق لكل ميزة وكيف تساعد عملك تحديدًا.
                             </p>
                         </div>
-                    </AnimateOnScroll>
-                </div>
+                    </FadeIn>
+                </Container>
             </section>
 
-            {/* Feature Sections */}
+            {/* Feature sections */}
             {features.map((f, i) => (
-                <section key={i} className={`py-16 sm:py-24 ${i % 2 === 0 ? 'bg-navy-900/30' : ''}`}>
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <AnimateOnScroll>
-                            <div className={`grid md:grid-cols-2 gap-12 items-center ${i % 2 === 1 ? 'md:[direction:ltr]' : ''
-                                }`}>
-                                {/* Text */}
-                                <div className={i % 2 === 1 ? 'md:[direction:rtl]' : ''}>
-                                    <div className="flex items-center gap-3 mb-4">
-                                        <div className="w-12 h-12 rounded-xl bg-teal-400/10 flex items-center justify-center text-teal-400">
+                <section key={i} style={{ padding: '80px 0', background: i % 2 === 0 ? '#0D0D12' : 'transparent' }}>
+                    <Container>
+                        <FadeIn delay={80}>
+                            <div style={{
+                                display: 'grid',
+                                gridTemplateColumns: '1fr 1fr',
+                                gap: '64px',
+                                alignItems: 'center',
+                            }} className="feature-grid">
+                                {/* Text side — always render first in DOM for RTL */}
+                                <div style={{ order: i % 2 === 0 ? 0 : 1 }}>
+                                    {/* Icon + badge */}
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
+                                        <div style={{ width: '52px', height: '52px', borderRadius: '16px', background: f.bg, border: `1px solid ${f.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: f.color, flexShrink: 0 }}>
                                             {f.icon}
                                         </div>
                                         {f.comingSoon && (
-                                            <span className="px-3 py-1 rounded-full bg-amber-400/10 text-amber-400 text-xs font-bold">
+                                            <span style={{ padding: '4px 12px', borderRadius: '9999px', background: 'rgba(244,114,182,0.10)', color: '#f472b6', fontSize: '12px', fontWeight: 700, border: '1px solid rgba(244,114,182,0.20)' }}>
                                                 قريبًا
                                             </span>
                                         )}
                                     </div>
-                                    <h2 className="text-2xl sm:text-3xl font-bold mb-4">{f.title}</h2>
-                                    <p className="text-slate-300 leading-relaxed mb-6">{f.desc}</p>
 
-                                    <ul className="space-y-3 mb-6">
-                                        {f.details.map((d, j) => (
-                                            <li key={j} className="flex items-center gap-2 text-sm">
-                                                <CheckCircle2 size={16} className="text-teal-400 shrink-0" />
-                                                <span className="text-slate-200">{d}</span>
+                                    <p style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: f.color, marginBottom: '10px' }}>{f.tagline}</p>
+                                    <h2 style={{ fontSize: 'clamp(1.5rem, 3vw, 2rem)', fontWeight: 900, color: '#fff', marginBottom: '16px', lineHeight: 1.25 }}>{f.title}</h2>
+                                    <p style={{ color: 'rgba(255,255,255,0.55)', lineHeight: 1.85, marginBottom: '28px', fontSize: '15px' }}>{f.desc}</p>
+
+                                    <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '28px' }}>
+                                        {f.points.map((p, j) => (
+                                            <li key={j} style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', fontSize: '14px' }}>
+                                                <div style={{ width: '20px', height: '20px', borderRadius: '50%', background: f.bg, color: f.color, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: '2px' }}>
+                                                    <CheckCircle2 size={11} />
+                                                </div>
+                                                <span style={{ color: 'rgba(255,255,255,0.70)' }}>{p}</span>
                                             </li>
                                         ))}
                                     </ul>
 
-                                    {/* Use Case */}
-                                    <div className="p-4 rounded-xl bg-teal-400/5 border border-teal-400/10">
-                                        <p className="text-sm text-slate-300">
-                                            <span className="text-teal-400 font-bold">مثال: </span>
-                                            {f.useCase}
-                                        </p>
+                                    <div style={{ padding: '16px 20px', borderRadius: '14px', background: f.bg, border: `1px solid ${f.border}`, fontSize: '14px', lineHeight: 1.7 }}>
+                                        <span style={{ color: f.color, fontWeight: 700 }}>مثال واقعي: </span>
+                                        <span style={{ color: 'rgba(255,255,255,0.60)' }}>{f.useCase}</span>
                                     </div>
                                 </div>
 
-                                {/* Illustration */}
-                                <div>
-                                    <div className="aspect-[4/3] rounded-2xl bg-gradient-to-br from-teal-400/10 to-navy-800 border border-white/10 flex items-center justify-center">
-                                        <div className="text-center p-8">
-                                            <div className="w-20 h-20 mx-auto mb-4 rounded-2xl bg-teal-400/20 flex items-center justify-center text-teal-400">
+                                {/* Visual side */}
+                                <div style={{ order: i % 2 === 0 ? 1 : 0 }}>
+                                    <div style={{ aspectRatio: '4/3', borderRadius: '20px', background: f.bg, border: `1px solid ${f.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                        <div style={{ textAlign: 'center' }}>
+                                            <div style={{ width: '64px', height: '64px', margin: '0 auto 12px', borderRadius: '18px', background: f.bg, border: `1px solid ${f.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: f.color }}>
                                                 {f.icon}
                                             </div>
-                                            <p className="text-slate-400">{f.title}</p>
+                                            <p style={{ color: 'rgba(255,255,255,0.30)', fontSize: '13px' }}>{f.title}</p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </AnimateOnScroll>
-                    </div>
+                        </FadeIn>
+                    </Container>
                 </section>
             ))}
 
-            {/* Bottom CTA */}
-            <section className="py-20">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                    <AnimateOnScroll>
-                        <h2 className="text-3xl sm:text-4xl font-extrabold mb-6">
-                            جاهز تجرب بنفسك؟
-                        </h2>
-                        <p className="text-slate-300 text-lg mb-8">
-                            ابدأ أسبوعين مجانًا — بدون بطاقة ائتمانية
-                        </p>
-                        <Link
-                            to="/register?plan=team"
-                            className="inline-flex items-center gap-2 px-10 py-4 bg-teal-400 hover:bg-teal-500 text-navy-950 rounded-xl text-lg font-bold transition-all hover:shadow-lg hover:shadow-teal-400/25"
-                        >
-                            ابدأ مجانًا لأسبوعين
-                            <ArrowLeft size={20} />
-                        </Link>
-                    </AnimateOnScroll>
-                </div>
+            {/* CTA */}
+            <section style={{ padding: '96px 0' }}>
+                <Container>
+                    <FadeIn>
+                        <div style={{ textAlign: 'center' }}>
+                            <h2 style={{ fontSize: 'clamp(1.75rem, 3.5vw, 2.5rem)', fontWeight: 900, marginBottom: '16px', color: '#fff' }}>جاهز تجرب؟</h2>
+                            <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: '1.1rem', marginBottom: '36px' }}>أسبوعان مجانًا — بدون بطاقة ائتمانية</p>
+                            <Link to="/register?plan=team" className="btn-primary" style={{ padding: '14px 40px', fontSize: '15px', display: 'inline-flex', alignItems: 'center', gap: '10px', position: 'relative', textDecoration: 'none' }}>
+                                <Zap size={17} style={{ position: 'relative', zIndex: 1 }} />
+                                <span style={{ position: 'relative', zIndex: 1 }}>ابدأ مجانًا الآن</span>
+                            </Link>
+                        </div>
+                    </FadeIn>
+                </Container>
             </section>
+
+            <style>{`
+                @media (max-width: 768px) {
+                    .feature-grid {
+                        grid-template-columns: 1fr !important;
+                    }
+                    .feature-grid > div {
+                        order: unset !important;
+                    }
+                }
+            `}</style>
         </div>
     );
 }

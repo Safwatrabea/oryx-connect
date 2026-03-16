@@ -1,36 +1,47 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { CheckCircle2, X, Zap, Calculator, TrendingDown, ArrowLeft } from 'lucide-react';
-import AnimateOnScroll from '../components/AnimateOnScroll';
+import { CheckCircle2, X, Zap, TrendingDown, ArrowLeft, Calculator } from 'lucide-react';
 
-export default function Pricing() {
+function Container({ children }) {
     return (
-        <div className="pt-24 sm:pt-32">
-            <PricingHeader />
-            <PricingCards />
-            <ComparisonTable />
-            <ROICalculator />
-            <PricingCTA />
+        <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 32px' }}>
+            {children}
         </div>
     );
 }
 
-function PricingHeader() {
+export default function Pricing() {
     return (
-        <section className="pb-16">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <AnimateOnScroll>
-                    <div className="text-center max-w-3xl mx-auto">
-                        <span className="text-teal-400 text-sm font-bold">الأسعار</span>
-                        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold mt-3 mb-6 leading-tight">
-                            أقل من راتب موظف واحد — وأكثر فاعلية بمراحل
-                        </h1>
-                        <p className="text-slate-300 text-lg leading-relaxed">
-                            اختر الخطة المناسبة لعملك. جميع الخطط تشمل أسبوعين مجانًا — بدون بطاقة ائتمانية.
-                        </p>
-                    </div>
-                </AnimateOnScroll>
-            </div>
+        <div style={{ paddingTop: '96px' }}>
+            <style>{`
+                @keyframes fadeUp {
+                    from { opacity: 0; transform: translateY(20px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+            `}</style>
+            <PricingHero />
+            <PricingCards />
+            <ComparisonTable />
+            <ROISection />
+            <PricingBottom />
+        </div>
+    );
+}
+
+function PricingHero() {
+    return (
+        <section style={{ padding: '72px 0 48px' }}>
+            <Container>
+                <div style={{ textAlign: 'center', maxWidth: '680px', margin: '0 auto', animation: 'fadeUp 0.6s ease both' }}>
+                    <span style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '0.15em', color: '#a78bfa', textTransform: 'uppercase' }}>الأسعار</span>
+                    <h1 style={{ fontSize: 'clamp(2rem, 4.5vw, 3.2rem)', fontWeight: 900, marginTop: '14px', marginBottom: '20px', lineHeight: 1.2, color: '#fff' }}>
+                        أقل من راتب موظف —<br />وأكثر فاعلية بمراحل
+                    </h1>
+                    <p style={{ color: 'rgba(255,255,255,0.50)', fontSize: '1.1rem', lineHeight: 1.75 }}>
+                        جميع الخطط تشمل أسبوعين مجانًا — لا بطاقة ائتمانية — إلغاء في أي وقت
+                    </p>
+                </div>
+            </Container>
         </section>
     );
 }
@@ -39,280 +50,263 @@ function PricingCards() {
     const plans = [
         {
             name: 'خطة الفريق',
-            price: '1,500',
-            discounted: '750',
-            desc: 'مثالية للمشاريع الصغيرة والفرق المكونة من 2-5 أشخاص',
+            price: '1,500', discounted: '750',
+            desc: 'للمشاريع الصغيرة والفرق من 2 إلى 5 أشخاص',
+            featured: false, plan: 'team',
             features: [
                 'صندوق وارد موحد',
-                '3 قنوات تواصل (واتساب + فيسبوك + تيليغرام)',
-                'حتى 5 مستخدمين',
+                'واتساب + فيسبوك + تيليغرام',
+                '5 مستخدمين',
                 'ردود سريعة وقوالب',
                 'تقارير أساسية',
-                'دعم فني عبر البريد الإلكتروني',
-                '1,000 محادثة شهريًا',
+                '1,000 محادثة/شهر',
+                'دعم عبر البريد الإلكتروني',
             ],
-            highlighted: false,
-            plan: 'team',
         },
         {
             name: 'خطة الأعمال',
-            price: '2,500',
-            discounted: '1,250',
-            desc: 'للشركات التي تحتاج تحكمًا أكبر وتحليلات متقدمة',
+            price: '2,500', discounted: '1,250',
+            desc: 'للشركات التي تحتاج أدوات متقدمة وفريقًا أكبر',
+            featured: true, plan: 'business',
             features: [
-                'كل مزايا خطة الفريق',
-                'جميع القنوات (4+ قنوات)',
-                'حتى 15 مستخدم',
-                'توزيع تلقائي ذكي',
-                'تحليلات متقدمة ولوحة بيانات',
+                'كل ما في خطة الفريق',
+                'جميع القنوات + إنستغرام',
+                '15 مستخدم',
+                'توزيع محادثات تلقائي',
+                'تحليلات متقدمة وتقارير مخصصة',
                 'API مفتوح للتكامل',
-                'دعم فني أولوية (واتساب + هاتف)',
-                'مدير حساب مخصص',
                 'محادثات غير محدودة',
-                'تدريب الفريق',
+                'دعم أولوية (واتساب + هاتف)',
+                'مدير حساب مخصص',
+                'تدريب كامل للفريق',
             ],
-            highlighted: true,
-            plan: 'business',
         },
     ];
 
     return (
-        <section className="pb-20">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-                    {plans.map((plan, i) => (
-                        <AnimateOnScroll key={i} delay={i * 200}>
-                            <div className={`relative rounded-2xl p-8 h-full flex flex-col ${plan.highlighted
-                                    ? 'bg-gradient-to-b from-teal-400/10 to-navy-800 border-2 border-teal-400/30'
-                                    : 'glass-card'
-                                }`}>
-                                {plan.highlighted && (
-                                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-teal-400 text-navy-950 rounded-full text-xs font-bold">
-                                        الأكثر طلبًا
+        <section style={{ padding: '0 0 80px' }}>
+            <Container>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px', maxWidth: '800px', margin: '0 auto' }}>
+                    {plans.map((p, i) => (
+                        <div key={i} style={{ animation: `fadeUp 0.6s ease ${i * 120}ms both` }}>
+                            <div style={{
+                                position: 'relative', borderRadius: '20px', padding: '36px 32px',
+                                display: 'flex', flexDirection: 'column', height: '100%',
+                                background: p.featured
+                                    ? 'linear-gradient(180deg, rgba(139,92,246,0.10) 0%, #13131A 100%)'
+                                    : 'rgba(255,255,255,0.03)',
+                                border: p.featured ? '1.5px solid rgba(139,92,246,0.30)' : '1px solid rgba(255,255,255,0.08)',
+                            }}>
+                                {p.featured && (
+                                    <div style={{ position: 'absolute', top: '-14px', left: '50%', transform: 'translateX(-50%)', padding: '6px 20px', borderRadius: '9999px', background: 'linear-gradient(135deg, #7C3AED, #8B5CF6)', color: '#fff', fontSize: '12px', fontWeight: 700, whiteSpace: 'nowrap' }}>
+                                        ⭐ الأكثر طلبًا
                                     </div>
                                 )}
 
-                                <div className="inline-flex self-start items-center gap-1 px-3 py-1 rounded-full bg-amber-400/10 text-amber-400 text-xs font-bold mb-4">
-                                    <Zap size={12} />
-                                    خصم 50% لأول 3 أشهر
+                                {/* Discount badge */}
+                                <div style={{ display: 'inline-flex', alignSelf: 'flex-start', alignItems: 'center', gap: '6px', padding: '5px 12px', borderRadius: '9999px', background: 'rgba(251,191,36,0.10)', color: '#fbbf24', fontSize: '12px', fontWeight: 700, border: '1px solid rgba(251,191,36,0.15)', marginBottom: '20px' }}>
+                                    <Zap size={11} /> خصم 50% — أول 3 شهور
                                 </div>
 
-                                <h3 className="text-xl font-bold mb-2">{plan.name}</h3>
-                                <p className="text-slate-400 text-sm mb-6">{plan.desc}</p>
+                                <h3 style={{ fontSize: '1.25rem', fontWeight: 900, color: '#fff', marginBottom: '6px' }}>{p.name}</h3>
+                                <p style={{ color: 'rgba(255,255,255,0.40)', fontSize: '13px', marginBottom: '24px' }}>{p.desc}</p>
 
-                                <div className="mb-6">
-                                    <div className="flex items-baseline gap-2">
-                                        <span className="text-4xl font-extrabold text-teal-400">{plan.discounted}</span>
-                                        <span className="text-slate-400">ريال/شهر</span>
+                                {/* Price */}
+                                <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', marginBottom: '32px' }}>
+                                    <span style={{ fontSize: '2.75rem', fontWeight: 900, ...(p.featured ? { background: 'linear-gradient(135deg, #8B5CF6, #FBBF24)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' } : { color: '#fff' }) }}>
+                                        {p.discounted}
+                                    </span>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                                        <span style={{ color: 'rgba(255,255,255,0.40)', fontSize: '13px' }}>ريال/شهر</span>
+                                        <span style={{ color: 'rgba(255,255,255,0.25)', fontSize: '12px', textDecoration: 'line-through' }}>{p.price}</span>
                                     </div>
-                                    <div className="text-sm text-slate-500 line-through mt-1">{plan.price} ريال/شهر</div>
                                 </div>
 
-                                <ul className="space-y-3 mb-8 flex-1">
-                                    {plan.features.map((f, j) => (
-                                        <li key={j} className="flex items-center gap-2 text-sm">
-                                            <CheckCircle2 size={16} className="text-teal-400 shrink-0" />
-                                            <span className="text-slate-200">{f}</span>
+                                {/* Features */}
+                                <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '32px', flex: 1 }}>
+                                    {p.features.map((f, j) => (
+                                        <li key={j} style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '14px' }}>
+                                            <CheckCircle2 size={15} style={{ color: p.featured ? '#a78bfa' : '#34d399', flexShrink: 0 }} />
+                                            <span style={{ color: 'rgba(255,255,255,0.65)' }}>{f}</span>
                                         </li>
                                     ))}
                                 </ul>
 
-                                <Link
-                                    to={`/register?plan=${plan.plan}`}
-                                    className={`block w-full text-center py-3.5 rounded-xl font-bold transition-all ${plan.highlighted
-                                            ? 'bg-teal-400 hover:bg-teal-500 text-navy-950 hover:shadow-lg hover:shadow-teal-400/25'
-                                            : 'bg-white/10 hover:bg-white/15 text-white'
-                                        }`}
-                                >
-                                    ابدأ مجانًا لأسبوعين
+                                <Link to={`/register?plan=${p.plan}`}
+                                    className={p.featured ? 'btn-primary' : 'btn-outline'}
+                                    style={{ display: 'block', textAlign: 'center', padding: '14px 24px', borderRadius: '12px', fontWeight: 700, fontSize: '14px', textDecoration: 'none', position: 'relative' }}>
+                                    {p.featured && <span style={{ position: 'absolute', inset: 0, borderRadius: '12px' }} />}
+                                    <span style={{ position: 'relative', zIndex: 1 }}>ابدأ مجانًا لأسبوعين</span>
                                 </Link>
                             </div>
-                        </AnimateOnScroll>
+                        </div>
                     ))}
                 </div>
-            </div>
+            </Container>
         </section>
     );
 }
 
 function ComparisonTable() {
-    const features = [
-        { name: 'صندوق وارد موحد', team: true, business: true },
-        { name: 'واتساب', team: true, business: true },
-        { name: 'فيسبوك ماسنجر', team: true, business: true },
-        { name: 'تيليغرام', team: true, business: true },
-        { name: 'إنستغرام', team: false, business: true },
-        { name: 'عدد المستخدمين', team: '5', business: '15' },
-        { name: 'ردود سريعة', team: true, business: true },
-        { name: 'توزيع تلقائي', team: false, business: true },
-        { name: 'تقارير أساسية', team: true, business: true },
-        { name: 'تحليلات متقدمة', team: false, business: true },
-        { name: 'API مفتوح', team: false, business: true },
-        { name: 'مدير حساب مخصص', team: false, business: true },
-        { name: 'المحادثات الشهرية', team: '1,000', business: 'غير محدود' },
-        { name: 'الدعم الفني', team: 'بريد إلكتروني', business: 'أولوية (واتساب + هاتف)' },
-        { name: 'تدريب الفريق', team: false, business: true },
+    const rows = [
+        { label: 'قنوات مدعومة', team: '3 قنوات', biz: 'جميع القنوات' },
+        { label: 'عدد المستخدمين', team: '5', biz: '15' },
+        { label: 'صندوق وارد موحد', team: true, biz: true },
+        { label: 'إنستغرام', team: false, biz: true },
+        { label: 'ردود سريعة وقوالب', team: true, biz: true },
+        { label: 'توزيع محادثات تلقائي', team: false, biz: true },
+        { label: 'تحليلات متقدمة', team: false, biz: true },
+        { label: 'API مفتوح', team: false, biz: true },
+        { label: 'المحادثات الشهرية', team: '1,000', biz: 'غير محدود' },
+        { label: 'الدعم الفني', team: 'بريد إلكتروني', biz: 'واتساب + هاتف' },
+        { label: 'مدير حساب مخصص', team: false, biz: true },
+        { label: 'تدريب الفريق', team: false, biz: true },
     ];
 
     return (
-        <section className="pb-20">
-            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-                <AnimateOnScroll>
-                    <h2 className="text-2xl sm:text-3xl font-bold text-center mb-10">
-                        مقارنة تفصيلية
-                    </h2>
-
-                    <div className="glass-card overflow-hidden overflow-x-auto">
-                        <table className="w-full min-w-[500px]">
+        <section style={{ padding: '0 0 80px' }}>
+            <Container>
+                <h2 style={{ fontSize: '1.6rem', fontWeight: 900, textAlign: 'center', color: '#fff', marginBottom: '32px' }}>مقارنة تفصيلية</h2>
+                <div style={{ maxWidth: '700px', margin: '0 auto', borderRadius: '16px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.07)', background: 'rgba(255,255,255,0.02)' }}>
+                    <div style={{ overflowX: 'auto' }}>
+                        <table style={{ width: '100%', minWidth: '480px', borderCollapse: 'collapse' }}>
                             <thead>
-                                <tr className="border-b border-white/10">
-                                    <th className="text-right p-4 font-bold text-sm">الميزة</th>
-                                    <th className="p-4 font-bold text-sm text-center">خطة الفريق</th>
-                                    <th className="p-4 font-bold text-sm text-center text-teal-400">خطة الأعمال</th>
+                                <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
+                                    <th style={{ padding: '16px 20px', textAlign: 'right', fontSize: '13px', color: 'rgba(255,255,255,0.50)', fontWeight: 500 }}>الميزة</th>
+                                    <th style={{ padding: '16px 20px', textAlign: 'center', fontSize: '13px', color: '#fff', fontWeight: 700 }}>الفريق</th>
+                                    <th style={{ padding: '16px 20px', textAlign: 'center', fontSize: '13px', color: '#a78bfa', fontWeight: 700 }}>الأعمال</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {features.map((f, i) => (
-                                    <tr key={i} className="border-b border-white/5 hover:bg-white/5 transition-colors">
-                                        <td className="p-4 text-sm text-slate-200">{f.name}</td>
-                                        <td className="p-4 text-center">
-                                            <CellValue value={f.team} />
+                                {rows.map((r, i) => (
+                                    <tr key={i} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+                                        <td style={{ padding: '14px 20px', fontSize: '14px', color: 'rgba(255,255,255,0.60)' }}>{r.label}</td>
+                                        <td style={{ padding: '14px 20px', textAlign: 'center' }}>
+                                            {typeof r.team === 'boolean'
+                                                ? r.team ? <CheckCircle2 size={16} style={{ margin: '0 auto', display: 'block', color: '#34d399' }} /> : <X size={16} style={{ margin: '0 auto', display: 'block', color: 'rgba(255,255,255,0.15)' }} />
+                                                : <span style={{ fontSize: '13px', color: 'rgba(255,255,255,0.60)' }}>{r.team}</span>}
                                         </td>
-                                        <td className="p-4 text-center">
-                                            <CellValue value={f.business} highlight />
+                                        <td style={{ padding: '14px 20px', textAlign: 'center' }}>
+                                            {typeof r.biz === 'boolean'
+                                                ? r.biz ? <CheckCircle2 size={16} style={{ margin: '0 auto', display: 'block', color: '#a78bfa' }} /> : <X size={16} style={{ margin: '0 auto', display: 'block', color: 'rgba(255,255,255,0.15)' }} />
+                                                : <span style={{ fontSize: '13px', color: '#c4b5fd', fontWeight: 600 }}>{r.biz}</span>}
                                         </td>
                                     </tr>
                                 ))}
                             </tbody>
                         </table>
                     </div>
-                </AnimateOnScroll>
-            </div>
+                </div>
+            </Container>
         </section>
     );
 }
 
-function CellValue({ value, highlight }) {
-    if (value === true) {
-        return <CheckCircle2 size={18} className={`mx-auto ${highlight ? 'text-teal-400' : 'text-green-400'}`} />;
-    }
-    if (value === false) {
-        return <X size={18} className="mx-auto text-slate-600" />;
-    }
-    return <span className={`text-sm ${highlight ? 'text-teal-400 font-medium' : 'text-slate-300'}`}>{value}</span>;
-}
+function ROISection() {
+    const [msgs, setMsgs] = useState(60);
+    const [order, setOrder] = useState(150);
 
-function ROICalculator() {
-    const [messagesPerDay, setMessagesPerDay] = useState(50);
-    const [avgOrderValue, setAvgOrderValue] = useState(100);
+    const loss = Math.round(msgs * 30 * 0.15 * 0.3 * order);
+    const planCost = 750;
+    const roi = loss > 0 ? Math.round(((loss - planCost) / planCost) * 100) : 0;
 
-    const lostRate = 0.15; // 15% of messages lost
-    const conversionRate = 0.30; // 30% would have converted
-    const monthlyLoss = Math.round(messagesPerDay * 30 * lostRate * conversionRate * avgOrderValue);
+    const inputStyle = {
+        width: '100%', padding: '12px 16px', borderRadius: '12px',
+        background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)',
+        color: '#fff', fontSize: '16px', outline: 'none', transition: 'border-color 0.2s',
+        boxSizing: 'border-box',
+    };
 
     return (
-        <section className="pb-20" id="roi-calculator">
-            <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-                <AnimateOnScroll>
-                    <div className="glass-card p-8 sm:p-12">
-                        <div className="flex items-center gap-3 mb-6">
-                            <div className="w-12 h-12 rounded-xl bg-red-400/10 flex items-center justify-center text-red-400">
-                                <Calculator size={24} />
+        <section style={{ padding: '0 0 80px' }}>
+            <Container>
+                <div style={{ maxWidth: '640px', margin: '0 auto' }}>
+                    <div className="glass noise" style={{ padding: '40px 36px', borderRadius: '20px' }}>
+                        {/* Header */}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '32px' }}>
+                            <div style={{ width: '48px', height: '48px', borderRadius: '14px', background: 'rgba(239,68,68,0.10)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#f87171', flexShrink: 0 }}>
+                                <Calculator size={22} />
                             </div>
                             <div>
-                                <h2 className="text-xl sm:text-2xl font-bold">كم تخسر من رسائل ضائعة؟</h2>
-                                <p className="text-slate-400 text-sm">احسب خسارتك الشهرية بدون نظام إدارة رسائل</p>
+                                <h2 style={{ fontSize: '1.15rem', fontWeight: 900, color: '#fff', marginBottom: '4px' }}>كم تخسر من رسائل ضائعة؟</h2>
+                                <p style={{ color: 'rgba(255,255,255,0.40)', fontSize: '13px' }}>احسب خسارتك الشهرية بدون نظام إدارة</p>
                             </div>
                         </div>
 
-                        <div className="grid sm:grid-cols-2 gap-6 mb-8">
+                        {/* Inputs */}
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '28px' }} className="roi-grid">
                             <div>
-                                <label className="block text-sm font-medium text-slate-300 mb-2">
-                                    عدد الرسائل يوميًا
-                                </label>
-                                <input
-                                    type="number"
-                                    value={messagesPerDay}
-                                    onChange={(e) => setMessagesPerDay(Number(e.target.value) || 0)}
-                                    className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white focus:border-teal-400 focus:outline-none transition-colors text-lg"
-                                    min={0}
+                                <label style={{ display: 'block', fontSize: '13px', color: 'rgba(255,255,255,0.60)', marginBottom: '8px', fontWeight: 500 }}>عدد الرسائل يوميًا</label>
+                                <input type="number" value={msgs} min={0}
+                                    onChange={e => setMsgs(Number(e.target.value) || 0)}
+                                    style={inputStyle}
+                                    onFocus={e => e.target.style.borderColor = '#8B5CF6'}
+                                    onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.08)'}
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-slate-300 mb-2">
-                                    متوسط قيمة الطلب (ريال)
-                                </label>
-                                <input
-                                    type="number"
-                                    value={avgOrderValue}
-                                    onChange={(e) => setAvgOrderValue(Number(e.target.value) || 0)}
-                                    className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white focus:border-teal-400 focus:outline-none transition-colors text-lg"
-                                    min={0}
+                                <label style={{ display: 'block', fontSize: '13px', color: 'rgba(255,255,255,0.60)', marginBottom: '8px', fontWeight: 500 }}>متوسط قيمة الطلب (ريال)</label>
+                                <input type="number" value={order} min={0}
+                                    onChange={e => setOrder(Number(e.target.value) || 0)}
+                                    style={inputStyle}
+                                    onFocus={e => e.target.style.borderColor = '#8B5CF6'}
+                                    onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.08)'}
                                 />
                             </div>
                         </div>
 
-                        {/* Result */}
-                        <div className="p-6 rounded-2xl bg-red-400/5 border border-red-400/20 text-center">
-                            <div className="flex items-center justify-center gap-2 mb-2">
-                                <TrendingDown size={20} className="text-red-400" />
-                                <span className="text-slate-400 text-sm">خسارتك الشهرية المقدرة</span>
+                        {/* Result box */}
+                        <div style={{ borderRadius: '16px', background: 'linear-gradient(135deg, rgba(239,68,68,0.08), rgba(127,29,29,0.04))', border: '1px solid rgba(239,68,68,0.12)', padding: '24px', textAlign: 'center', marginBottom: '24px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', marginBottom: '8px', color: 'rgba(248,113,113,0.70)', fontSize: '13px' }}>
+                                <TrendingDown size={15} />
+                                خسارتك الشهرية المقدرة
                             </div>
-                            <div className="text-4xl sm:text-5xl font-extrabold text-red-400 mb-2" dir="ltr">
-                                {monthlyLoss.toLocaleString()} SAR
+                            <div style={{ fontSize: '3rem', fontWeight: 900, color: '#f87171', marginBottom: '4px' }} dir="ltr">
+                                {loss.toLocaleString()} <span style={{ fontSize: '1.5rem' }}>SAR</span>
                             </div>
-                            <p className="text-slate-400 text-sm">
-                                بناءً على نسبة 15% رسائل ضائعة و 30% معدل تحويل
-                            </p>
+                            {roi > 0 && (
+                                <p style={{ color: 'rgba(255,255,255,0.40)', fontSize: '12px', marginTop: '8px' }}>
+                                    مقابل {planCost} ريال/شهر فقط لـ Weoryx = ROI {roi}%
+                                </p>
+                            )}
                         </div>
 
-                        <div className="mt-6 text-center">
-                            <p className="text-slate-300 text-sm mb-4">
-                                مع Weoryx، لن تفقد أي رسالة — ابدأ بـ <span className="text-teal-400 font-bold">750 ريال/شهر</span> فقط
-                            </p>
-                            <Link
-                                to="/register?plan=team"
-                                className="inline-flex items-center gap-2 px-8 py-3 bg-teal-400 hover:bg-teal-500 text-navy-950 rounded-xl font-bold transition-all hover:shadow-lg hover:shadow-teal-400/25"
-                            >
-                                ابدأ مجانًا لأسبوعين
-                                <ArrowLeft size={18} />
-                            </Link>
-                        </div>
+                        <Link to="/register?plan=team" className="btn-primary" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', padding: '14px', fontSize: '15px', textDecoration: 'none', position: 'relative', borderRadius: '12px' }}>
+                            <Zap size={17} style={{ position: 'relative', zIndex: 1 }} />
+                            <span style={{ position: 'relative', zIndex: 1 }}>ابدأ وأنقذ هذه المبالغ — مجانًا</span>
+                        </Link>
                     </div>
-                </AnimateOnScroll>
-            </div>
+                </div>
+            </Container>
+
+            <style>{`
+                @media (max-width: 600px) {
+                    .roi-grid { grid-template-columns: 1fr !important; }
+                }
+            `}</style>
         </section>
     );
 }
 
-function PricingCTA() {
+function PricingBottom() {
     return (
-        <section className="py-20">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                <AnimateOnScroll>
-                    <h2 className="text-2xl sm:text-3xl font-bold mb-4">
-                        لا تزال متردد؟
-                    </h2>
-                    <p className="text-slate-300 text-lg mb-8 max-w-xl mx-auto">
-                        جرّب أسبوعين مجانًا — بدون بطاقة ائتمانية — وقرر بنفسك
-                    </p>
-                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                        <Link
-                            to="/register?plan=team"
-                            className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-teal-400 hover:bg-teal-500 text-navy-950 rounded-xl text-lg font-bold transition-all hover:shadow-lg hover:shadow-teal-400/25"
-                        >
-                            ابدأ الآن
-                            <ArrowLeft size={20} />
+        <section style={{ padding: '0 0 96px' }}>
+            <Container>
+                <div style={{ textAlign: 'center' }}>
+                    <p style={{ color: 'rgba(255,255,255,0.40)', fontSize: '14px', marginBottom: '24px' }}>لا تزال تتساءل؟</p>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center', gap: '16px' }}>
+                        <Link to="/register?plan=team" className="btn-primary" style={{ padding: '12px 32px', fontSize: '14px', display: 'inline-flex', alignItems: 'center', gap: '8px', textDecoration: 'none', position: 'relative' }}>
+                            <span style={{ position: 'relative', zIndex: 1 }}>ابدأ التجربة المجانية</span>
                         </Link>
-                        <Link
-                            to="/features"
-                            className="inline-flex items-center justify-center gap-2 px-8 py-4 border border-white/20 hover:border-teal-400/50 text-white rounded-xl text-lg font-medium transition-all hover:bg-white/5"
+                        <Link to="/features" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', color: 'rgba(255,255,255,0.45)', fontSize: '14px', textDecoration: 'none', transition: 'color 0.2s' }}
+                            onMouseEnter={e => e.currentTarget.style.color = '#fff'}
+                            onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.45)'}
                         >
-                            تعرف على المزايا
+                            اقرأ تفاصيل المزايا <ArrowLeft size={15} />
                         </Link>
                     </div>
-                </AnimateOnScroll>
-            </div>
+                </div>
+            </Container>
         </section>
     );
 }
